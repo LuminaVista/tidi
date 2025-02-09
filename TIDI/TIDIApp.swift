@@ -11,7 +11,7 @@ import SwiftUI
 struct TIDIApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            SplashScreenView() 
         }
     }
 }
