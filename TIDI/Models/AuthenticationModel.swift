@@ -12,3 +12,7 @@ struct User: Codable {
     let email: String
     let password: String
 }
+
+struct RegisterResponse: Decodable {
+    let message: String
+}

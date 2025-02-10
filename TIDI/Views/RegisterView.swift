@@ -49,6 +49,20 @@ struct RegisterView: View {
                     .padding(.horizontal)
                     .disabled(registerViewModel.username.isEmpty || registerViewModel.email.isEmpty || registerViewModel.password.isEmpty)
                     
+                    // Normal text + NavigationLink for "Log in"
+                    HStack {
+                        Text("Already have an account?")
+                            .foregroundColor(.black.opacity(0.7))
+                        
+                        NavigationLink(destination: LoginView()) {
+                            Text("Log in")
+                                .foregroundColor(.blue)
+                                .fontWeight(.bold)
+                        }
+                    }
+                    .font(.subheadline)
+                    .padding(.top, 10)
+                    
                     
                     Image("tidi_sun")  // Add your logo to Assets
                         .resizable()
@@ -62,6 +76,9 @@ struct RegisterView: View {
                         navigateToLogin = true
                     }
                 }
+            }
+            .navigationDestination(isPresented: $navigateToLogin) {
+                LoginView()
             }
         }
     }

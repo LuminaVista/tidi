@@ -12,8 +12,8 @@ struct AuthenticationService{
     
     static let shared = AuthenticationService()
     
-    func registerUser(user: User, completion:@escaping(Result<User, Error>)-> Void ){
-        guard let url = URL(string: "\(Constants.baseURL)/users/register") else {return}
+    func registerUser(user: User, completion: @escaping (Result<String, Error>) -> Void) {
+        guard let url = URL(string: "\(Constants.baseURL)/users/register") else { return }
         
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
@@ -27,7 +27,6 @@ struct AuthenticationService{
             return
         }
         
-        
         URLSession.shared.dataTask(with: request) { data, response, error in
             if let error = error {
                 completion(.failure(error))
@@ -36,12 +35,12 @@ struct AuthenticationService{
             guard let data = data else { return }
             
             do {
-                let registeredUser = try JSONDecoder().decode(User.self, from: data)
-                completion(.success(registeredUser))
+                // ✅ Decode response expecting a message instead of a User
+                let responseMessage = try JSONDecoder().decode(RegisterResponse.self, from: data)
+                completion(.success(responseMessage.message))
             } catch {
                 completion(.failure(error))
             }
         }.resume()
-        
     }
 }
