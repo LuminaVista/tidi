@@ -37,7 +37,7 @@ struct LoginView: View {
                         ProgressView()
                             .padding()
                     }
-                    
+
                     Button(action: {
                         loginViewModel.login()
                     }) {

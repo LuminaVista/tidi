@@ -31,8 +31,9 @@ class LoginViewModel: ObservableObject{
                 self?.isLoading = false
                 
                 switch result{
-                case .success(let message):
-                    print("Login Successfull!: \(message)")
+                case .success(let response):
+                    print("Login Successfull!: \(response.token)")
+                    KeychainHelper.shared.saveToken(response.token, forKey: "userAuthToken")
                     self?.isLoggedIn = true
                 case .failure(let error):
                     print("Login Failed: \(error.localizedDescription)")
