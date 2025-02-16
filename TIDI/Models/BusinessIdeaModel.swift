@@ -17,7 +17,7 @@ struct BusinessIdea: Codable, Identifiable {
     let target_location: String
     let created_at: String
     let isActive: Int
-    let idea_progress: Int
+    let idea_progress: Double
     
     var id: Int { business_idea_id } // Identifiable conformance
 }

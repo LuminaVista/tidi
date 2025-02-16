@@ -11,7 +11,6 @@ struct LoginView: View {
     @StateObject private var loginViewModel = LoginViewModel()
     @State private var navigateToHome = false  // Track navigation state
     
-    
     var body: some View {
         NavigationStack{
             ZStack{
