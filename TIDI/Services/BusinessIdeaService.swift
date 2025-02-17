@@ -36,6 +36,54 @@ struct BusinessIdeaService{
                 completion(.failure(error))
             }
         }.resume()
+    }
+    
+    // Create business idea: API Call
+    func createBusinessIdea(businessIdea: BusinessIdeaCreate, completion: @escaping(Result <BusinessIdeaCreateResponse, Error>) -> Void){
+        guard let url = URL(string: "\(Constants.baseURL)/businessIdea/create") else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        // retrive and add the auth token
+        if let token = KeychainHelper.shared.getToken(forKey: "userAuthToken") {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        
+        //conver to json
+        do {
+            let jsonData = try JSONEncoder().encode(businessIdea)
+            request.httpBody = jsonData
+        } catch {
+            completion(.failure(error))
+            return
+        }
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+                completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Server Error"])))
+                return
+            }
+            
+            guard let data = data else { return }
+            
+            do {
+                
+                let responseMessage = try JSONDecoder().decode(BusinessIdeaCreateResponse.self, from: data)
+                completion(.success(responseMessage))
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
         
         
         

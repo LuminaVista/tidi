@@ -31,12 +31,10 @@ struct LoginView: View {
                             .font(.footnote)
                             .padding(.horizontal)
                     }
-                    
                     if loginViewModel.isLoading {
                         ProgressView()
                             .padding()
                     }
-
                     Button(action: {
                         loginViewModel.login()
                     }) {

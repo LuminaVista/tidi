@@ -25,3 +25,17 @@ struct BusinessIdea: Codable, Identifiable {
 struct BusinessIdeaResponse: Codable {
     let businessIdeas: [BusinessIdea]
 }
+
+struct BusinessIdeaCreate: Codable {
+    let idea_name: String
+    let idea_foundation: String
+    let problem_statement: String
+    let unique_solution: String
+    let target_location: String
+}
+
+struct BusinessIdeaCreateResponse: Codable{
+    let message: String
+    let success: Bool
+}
+
