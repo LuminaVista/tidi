@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct BusinessIdeaCreateView: View {
+    @Environment(\.dismiss) private var dismiss // Modern back navigation method
     @StateObject private var viewModel = BusinessIdeaViewModel()
     @State private var navigateFromBICreateToHome = false  // Track navigation state
     
@@ -22,12 +23,26 @@ struct BusinessIdeaCreateView: View {
                 VStack(spacing: 0) {
                     // Logo at the Top
                     VStack {
-                        Image("app_logo") // Ensure it's in Assets
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 40)
-                            .padding(.top, 20) // Adjust based on safe area
-                            .padding(.bottom, 10) // Adjust based on safe area
+                        HStack{
+                            Button(action: {
+                                dismiss() // Modern back navigation
+                            }) {
+                                Image(systemName: "chevron.left")
+                                    .foregroundColor(.black)
+                                    .fontWeight(.bold)
+                            }
+                            .padding(.leading)
+                            .padding(.top, 30)
+                            Spacer()
+                            Image("app_logo") // Ensure it's in Assets
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 40)
+                                .padding(.top, 20) // Adjust based on safe area
+                                .padding(.bottom, 10) // Adjust based on safe area
+                            Spacer()
+                        }
+                        
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.bottom, 10) // Space below the logo
@@ -61,11 +76,13 @@ struct BusinessIdeaCreateView: View {
                         .padding()
                         
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
                     .background(Color.white)
                     .cornerRadius(20)
+                    .frame(maxWidth: .infinity)
+                    .ignoresSafeArea(edges: .bottom)
                     
                 }
+                
             }
             .navigationDestination(isPresented: $navigateFromBICreateToHome) {
                 HomeView()  // Navigate to HomeView when logged in
@@ -76,6 +93,7 @@ struct BusinessIdeaCreateView: View {
                 }
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
     
     // Computed Property to Check Form Validity
@@ -97,11 +115,12 @@ struct CustomeTextFieldBusinessIdeaCreate: View {
         VStack(alignment: .leading, spacing: 5) {
             Text(title)
                 .font(.subheadline)
+                .fontWeight(.bold)
                 .foregroundColor(.black)
                 .padding(.horizontal, 10)
                 .padding(.top, 5)
                 .padding(.bottom, 5)
-
+            
             if isMultiline {
                 TextEditor(text: $text)
                     .frame(height: 80)
@@ -118,10 +137,10 @@ struct CustomeTextFieldBusinessIdeaCreate: View {
         .padding()
         .background(Color(hex: "#E6DED3")) // Light beige background
         .cornerRadius(15)
-//        .overlay( // Adding Black Stroke Border
-//            RoundedRectangle(cornerRadius: 15)
-//                .stroke(Color.gray, lineWidth: 2)
-//        )
+        //        .overlay( // Adding Black Stroke Border
+        //            RoundedRectangle(cornerRadius: 15)
+        //                .stroke(Color.gray, lineWidth: 2)
+        //        )
     }
 }
 

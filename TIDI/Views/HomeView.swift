@@ -66,22 +66,26 @@ struct HomeView: View {
                         }
                         .padding(20)
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .frame(maxWidth: .infinity)
                     .background(Color.white)
                     .cornerRadius(20)
+                    .ignoresSafeArea(edges: .bottom)
                 }
             }
             .onAppear {
                 viewModel.loadBusinessIdeas()
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
+    
     
     // Filter Ideas based on Active/Inactive tab
     private var filteredIdeas: [BusinessIdea] {
         return viewModel.businessIdeas.filter { ($0.isActive == 1) == (selectedTab == 1) }
     }
 }
+
 
 // MARK: - Business Idea Card Component
 struct BusinessIdeaCard: View {

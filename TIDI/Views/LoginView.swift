@@ -65,6 +65,7 @@ struct LoginView: View {
                 HomeView()  // Navigate to HomeView when logged in
             }
         }
+        .navigationBarBackButtonHidden(true)
     }
 }
 
