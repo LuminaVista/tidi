@@ -84,12 +84,46 @@ struct BusinessIdeaService{
                 completion(.failure(error))
             }
         }.resume()
-        
-        
-        
     }
     
     
-    
+    func fetchSingleBusinessIdeaDetails(business_idea_id: Int, completion: @escaping(Result<BusinessIdea, Error>)-> Void){
+        // API Endpoint
+        guard let url = URL(string: "\(Constants.baseURL)/businessIdea/\(business_idea_id)") else {
+            completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
+            return
+        }
+        
+        
+        var request = URLRequest(url : url)
+        request.httpMethod = "GET"
+        
+        // retrive and add the auth token
+        if let token = KeychainHelper.shared.getToken(forKey: "userAuthToken") {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        
+        // Network Request
+        URLSession.shared.dataTask(with: request){ data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let data = data else {
+                completion(.failure(NSError(domain: "", code: 500, userInfo: [NSLocalizedDescriptionKey: "No data received"])))
+                return
+            }
+            
+            do {
+                let decodedResponse = try JSONDecoder().decode(SingleBusinessIdeaDetailsResponse.self, from: data)
+                DispatchQueue.main.async {
+                    completion(.success(decodedResponse.businessIdea))
+                }
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
+    }
     
 }

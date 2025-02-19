@@ -23,6 +23,12 @@ class BusinessIdeaViewModel: ObservableObject {
     @Published var errorMessageBICreate: String?
     @Published var biCreateSuccess: Bool?
     
+    
+    // load single businessIdea related variables
+    @Published var businessIdea: BusinessIdea?
+    @Published var isLoadingSingleBusinessDetails = false
+    @Published var errorMessageSingleBusinessDetails: String?
+    
     func loadBusinessIdeas() {
         isLoading = true
         BusinessIdeaService.shared.fetchBusinessIdeas { [weak self] result in
@@ -60,6 +66,23 @@ class BusinessIdeaViewModel: ObservableObject {
                     self.biCreateSuccess = response.success
                 case .failure(let error):
                     self.errorMessageBICreate = "Error: \(error.localizedDescription)"
+                }
+            }
+        }
+    }
+    
+    func loadSingleBusinessIdeaDetails(business_idea_id: Int){
+        isLoadingSingleBusinessDetails = true
+        errorMessageSingleBusinessDetails = nil
+        
+        BusinessIdeaService.shared.fetchSingleBusinessIdeaDetails(business_idea_id: business_idea_id){ result in
+            DispatchQueue.main.async {
+                self.isLoadingSingleBusinessDetails = false
+                switch result {
+                case .success(let idea):
+                    self.businessIdea = idea
+                case .failure(let error):
+                    self.errorMessageSingleBusinessDetails = error.localizedDescription
                 }
             }
         }

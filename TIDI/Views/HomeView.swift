@@ -92,33 +92,37 @@ struct BusinessIdeaCard: View {
     var idea: BusinessIdea
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text(idea.idea_name)
-                    .font(.title3)
-                    .bold()
+        
+        NavigationLink(destination: BusinessIdeaDetails(ideaId: idea.business_idea_id)) {
+            
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Text(idea.idea_name)
+                        .font(.title3)
+                        .bold()
+                    
+                    Spacer()
+                }
                 
-                Spacer()
-                // todo: Action Button
+                Text(idea.problem_statement)
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                
+                HStack {
+                    // todo: User Avatars
+                    // Progress Ring
+                    Spacer()
+                    CircularProgressView(progress: idea.idea_progress)
+                        .frame(width: 80, height: 80)
+                    Spacer()
+                }
+                .padding(20)
             }
-            
-            Text(idea.problem_statement)
-                .font(.subheadline)
-                .foregroundColor(.gray)
-            
-            HStack {
-                // todo: User Avatars
-                // Progress Ring
-                Spacer()
-                CircularProgressView(progress: idea.idea_progress)
-                    .frame(width: 80, height: 80)
-                Spacer()
-            }
-            .padding(20)
+            .padding()
+            .background(idea.isActive == 1 ? Color(hex: "#EEEBE8") : Color(hex: "#DDEAE5"))
+            .clipShape(RoundedRectangle(cornerRadius: 15))
         }
-        .padding()
-        .background(idea.isActive == 1 ? Color(hex: "#EEEBE8") : Color(hex: "#DDEAE5"))
-        .clipShape(RoundedRectangle(cornerRadius: 15))
+        .buttonStyle(PlainButtonStyle())
     }
 }
 

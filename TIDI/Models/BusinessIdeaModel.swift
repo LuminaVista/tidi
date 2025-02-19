@@ -39,3 +39,6 @@ struct BusinessIdeaCreateResponse: Codable{
     let success: Bool
 }
 
+struct SingleBusinessIdeaDetailsResponse: Codable {
+    let businessIdea: BusinessIdea
+}
