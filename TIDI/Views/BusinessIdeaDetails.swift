@@ -51,7 +51,7 @@ struct BusinessIdeaDetails: View {
                             
                             //Text("Status: \(idea.isActive == 1 ? "Active" : "Inactive")")
                             //Text("Progress: \(Int(idea.idea_progress))%")
-                            //Text("Created: \(idea.created_at)")
+                            Text("businessIdeaId: \(idea.business_idea_id)")
                         }
                         .padding()
                     }
