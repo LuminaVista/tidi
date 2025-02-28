@@ -85,7 +85,6 @@ struct RegisterView: View {
     }
 }
 
-
 // Custom Rounded TextField
 struct CustomTextField: View {
     var placeholder: String

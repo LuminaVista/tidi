@@ -26,6 +26,7 @@ class BusinessIdeaViewModel: ObservableObject {
     
     // load single businessIdea related variables
     @Published var businessIdea: BusinessIdea?
+    @Published var stages: [Stage] = []
     @Published var isLoadingSingleBusinessDetails = false
     @Published var errorMessageSingleBusinessDetails: String?
     
@@ -79,8 +80,9 @@ class BusinessIdeaViewModel: ObservableObject {
             DispatchQueue.main.async {
                 self.isLoadingSingleBusinessDetails = false
                 switch result {
-                case .success(let idea):
+                case .success(let (idea, stages)):
                     self.businessIdea = idea
+                    self.stages = stages
                 case .failure(let error):
                     self.errorMessageSingleBusinessDetails = error.localizedDescription
                 }

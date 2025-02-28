@@ -87,7 +87,7 @@ struct HomeView: View {
 }
 
 
-// MARK: - Business Idea Card Component
+// Business Idea Card Component
 struct BusinessIdeaCard: View {
     var idea: BusinessIdea
     

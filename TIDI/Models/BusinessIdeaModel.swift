@@ -41,4 +41,5 @@ struct BusinessIdeaCreateResponse: Codable{
 
 struct SingleBusinessIdeaDetailsResponse: Codable {
     let businessIdea: BusinessIdea
+    let stages: [Stage]
 }

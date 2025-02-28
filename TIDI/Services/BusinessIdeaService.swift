@@ -87,7 +87,7 @@ struct BusinessIdeaService{
     }
     
     
-    func fetchSingleBusinessIdeaDetails(business_idea_id: Int, completion: @escaping(Result<BusinessIdea, Error>)-> Void){
+    func fetchSingleBusinessIdeaDetails(business_idea_id: Int, completion: @escaping(Result<(BusinessIdea, [Stage]), Error>)-> Void){
         // API Endpoint
         guard let url = URL(string: "\(Constants.baseURL)/businessIdea/\(business_idea_id)") else {
             completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid URL"])))
@@ -115,10 +115,11 @@ struct BusinessIdeaService{
                 return
             }
             
+            
             do {
                 let decodedResponse = try JSONDecoder().decode(SingleBusinessIdeaDetailsResponse.self, from: data)
                 DispatchQueue.main.async {
-                    completion(.success(decodedResponse.businessIdea))
+                    completion(.success((decodedResponse.businessIdea, decodedResponse.stages)))
                 }
             } catch {
                 completion(.failure(error))

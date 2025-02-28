@@ -47,11 +47,47 @@ struct BusinessIdeaDetails: View {
                             BusinessIdeaCardDeatils(title: "Unique Solution", text: idea.unique_solution, customFontWeight: .regular, customFontSize: 18)
                             BusinessIdeaCardDeatils(title: "Location or country to first target", text: idea.target_location, customFontWeight: .regular, customFontSize: 18)
                             
-                            
-                            
-                            //Text("Status: \(idea.isActive == 1 ? "Active" : "Inactive")")
-                            //Text("Progress: \(Int(idea.idea_progress))%")
-                            Text("businessIdeaId: \(idea.business_idea_id)")
+                            // show the stages with progress
+                            // Text("Status: \(idea.isActive == 1 ? "Active" : "Inactive")")
+                            // Text("Progress: \(Int(idea.idea_progress))%")
+                            VStack {
+                                ForEach(viewModel.stages, id: \.id) { stage in
+                                    VStack() {
+                                        HStack{
+                                            CircularProgressView(progress: stage.progress)
+                                            VStack(alignment: .leading){
+                                                
+                                                HStack{
+                                                    Text(stage.stage_name)
+                                                        .font(.title2)
+                                                        .fontWeight(.bold)
+                                                    Spacer()
+                                                    Image(systemName: "chevron.right")
+                                                        .foregroundColor(.black)
+                                                        .fontWeight(.bold)
+                                                }
+                                                Text(stage.sub_stages.joined(separator: ", "))
+                                                    .font(.subheadline)
+                                                    .foregroundColor(.gray)
+                                                    .lineLimit(2) // Restrict to one line
+                                            }
+                                            .padding()
+                                            Spacer()
+                                            
+                                        }
+                                        .frame(maxWidth: .infinity)
+                                        
+                                        
+                                        //Text("Progress: \(Int(stage.progress))%") // Ensure correct format
+                                        //    .font(.subheadline)
+                                        //Text("Completed: \(stage.completed == 1 ? "Yes" : "No")")
+                                        //    .font(.subheadline)
+                                    }
+                                    .padding()
+                                    .background(Color.gray.opacity(0.1))
+                                    .cornerRadius(10)
+                                }
+                            }
                         }
                         .padding()
                     }
@@ -71,6 +107,8 @@ struct BusinessIdeaDetails: View {
         .navigationBarBackButtonHidden(true)
     }
 }
+
+
 
 struct BusinessIdeaCardDeatils: View {
     var title: String
@@ -102,5 +140,5 @@ struct BusinessIdeaCardDeatils: View {
 
 
 #Preview {
-    BusinessIdeaDetails(ideaId: 8)
+    BusinessIdeaDetails(ideaId: 17)
 }
