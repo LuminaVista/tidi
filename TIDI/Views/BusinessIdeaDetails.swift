@@ -50,44 +50,19 @@ struct BusinessIdeaDetails: View {
                             // show the stages with progress
                             // Text("Status: \(idea.isActive == 1 ? "Active" : "Inactive")")
                             // Text("Progress: \(Int(idea.idea_progress))%")
-                            VStack {
-                                ForEach(viewModel.stages, id: \.id) { stage in
-                                    VStack() {
-                                        HStack{
-                                            CircularProgressView(progress: stage.progress)
-                                            VStack(alignment: .leading){
-                                                
-                                                HStack{
-                                                    Text(stage.stage_name)
-                                                        .font(.title2)
-                                                        .fontWeight(.bold)
-                                                    Spacer()
-                                                    Image(systemName: "chevron.right")
-                                                        .foregroundColor(.black)
-                                                        .fontWeight(.bold)
-                                                }
-                                                Text(stage.sub_stages.joined(separator: ", "))
-                                                    .font(.subheadline)
-                                                    .foregroundColor(.gray)
-                                                    .lineLimit(2) // Restrict to one line
+                            // Stages with progress
+                            LazyVStack {
+                                    ForEach(viewModel.stages, id: \.id) { stage in
+                                        if let destination = StageNavigationManager.getView(for: stage.stage_name, businessIdeaId: idea.business_idea_id) {
+                                            NavigationLink(destination: destination) {
+                                                StageRowView(stage: stage)
                                             }
-                                            .padding()
-                                            Spacer()
-                                            
+                                            .buttonStyle(.plain) // Ensures proper tap detection
+                                        } else {
+                                            StageRowView(stage: stage)
                                         }
-                                        .frame(maxWidth: .infinity)
-                                        
-                                        
-                                        //Text("Progress: \(Int(stage.progress))%") // Ensure correct format
-                                        //    .font(.subheadline)
-                                        //Text("Completed: \(stage.completed == 1 ? "Yes" : "No")")
-                                        //    .font(.subheadline)
                                     }
-                                    .padding()
-                                    .background(Color.gray.opacity(0.1))
-                                    .cornerRadius(10)
                                 }
-                            }
                         }
                         .padding()
                     }
@@ -109,6 +84,17 @@ struct BusinessIdeaDetails: View {
 }
 
 
+// Navigation Manager: Maps stage names to corresponding views
+struct StageNavigationManager {
+    static func getView(for stageName: String, businessIdeaId: Int) -> AnyView? {
+        let mapping: [String: AnyView] = [
+            "Concept": AnyView(ConceptCategoriesView(businessIdeaId: businessIdeaId))
+//            "Research": AnyView(ResearchView(businessIdeaId: String(businessIdeaId))),
+//            "Branding": AnyView(BrandingView(businessIdeaId: String(businessIdeaId)))
+        ]
+        return mapping[stageName]
+    }
+}
 
 struct BusinessIdeaCardDeatils: View {
     var title: String
@@ -138,7 +124,42 @@ struct BusinessIdeaCardDeatils: View {
 }
 
 
+// Extracted stage row component
+struct StageRowView: View {
+    let stage: Stage
+    
+    var body: some View {
+        VStack {
+            HStack {
+                CircularProgressView(progress: stage.progress)
+                VStack(alignment: .leading) {
+                    HStack {
+                        Text(stage.stage_name)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .foregroundColor(.black)
+                            .fontWeight(.bold)
+                    }
+                    Text(stage.sub_stages.joined(separator: ", "))
+                        .font(.subheadline)
+                        .foregroundColor(.gray)
+                        .lineLimit(2)
+                }
+                .padding()
+                Spacer()
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .padding()
+        .background(Color.gray.opacity(0.1))
+        .cornerRadius(15)
+    }
+}
+
+
 
 #Preview {
-    BusinessIdeaDetails(ideaId: 17)
+    BusinessIdeaDetails(ideaId: 20)
 }
