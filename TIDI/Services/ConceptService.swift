@@ -39,9 +39,9 @@ struct ConceptService{
                 return
             }
             
-            if let jsonString = String(data: data, encoding: .utf8) {
-                print("API Response JSON: \(jsonString)")
-            }
+//            if let jsonString = String(data: data, encoding: .utf8) {
+//                print("API Response JSON: \(jsonString)")
+//            }
             
             do {
                 let decoder = JSONDecoder()

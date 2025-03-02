@@ -53,7 +53,7 @@ struct BusinessIdeaDetails: View {
                             // Stages with progress
                             LazyVStack {
                                     ForEach(viewModel.stages, id: \.id) { stage in
-                                        if let destination = StageNavigationManager.getView(for: stage.stage_name, businessIdeaId: idea.business_idea_id) {
+                                        if let destination = StageNavigationManager.getView(for: stage.stage_name, businessIdeaId: idea.business_idea_id, progress: stage.progress) {
                                             NavigationLink(destination: destination) {
                                                 StageRowView(stage: stage)
                                             }
@@ -86,9 +86,9 @@ struct BusinessIdeaDetails: View {
 
 // Navigation Manager: Maps stage names to corresponding views
 struct StageNavigationManager {
-    static func getView(for stageName: String, businessIdeaId: Int) -> AnyView? {
+    static func getView(for stageName: String, businessIdeaId: Int, progress: Double) -> AnyView? {
         let mapping: [String: AnyView] = [
-            "Concept": AnyView(ConceptCategoriesView(businessIdeaId: businessIdeaId))
+            "Concept": AnyView(ConceptCategoriesView(businessIdeaId: businessIdeaId, progress: progress))
 //            "Research": AnyView(ResearchView(businessIdeaId: String(businessIdeaId))),
 //            "Branding": AnyView(BrandingView(businessIdeaId: String(businessIdeaId)))
         ]
