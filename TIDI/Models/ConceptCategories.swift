@@ -28,3 +28,29 @@ struct ConceptCategoryResponse: Codable {
         case categories
     }
 }
+
+//concept answer response stays under the concept categories
+
+struct ConceptAnswerResponse: Codable {
+    let message: String
+    let category_name: String
+    let answers: [ConceptAnswer]
+}
+
+struct ConceptAnswer: Codable, Identifiable {
+    let question: String
+    let answer: String
+    let concept_question_id: Int
+    let concept_id: Int
+    let concept_cat_id: Int
+    
+    var id: Int { concept_question_id }
+    
+    // Parse bullet points from the answer string
+    var bulletPoints: [String] {
+        answer.split(separator: "\n")
+            .map { String($0) }
+            .filter { $0.hasPrefix("- ") }
+            .map { String($0.dropFirst(2)) }
+    }
+}

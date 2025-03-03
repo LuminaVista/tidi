@@ -16,7 +16,6 @@ struct ConceptCategoriesView: View {
     var body: some View {
         NavigationStack{
             VStack{
-                
                 HStack {
                     Button(action: {
                         dismiss() // Modern back navigation
@@ -51,14 +50,19 @@ struct ConceptCategoriesView: View {
                         
                         LazyVStack(spacing: 10) {
                             ForEach(viewModel.categories, id: \.id) { category in
-                                HStack {
-                                    Text(category.name)
-                                        .font(.headline)
-                                    Spacer()
+                                NavigationLink(destination: ConceptAnswersView(businessIdeaId: businessIdeaId, conceptCatId: category.id)) {
+                                    HStack {
+                                        Text(category.name)
+                                            .font(.headline)
+                                            .foregroundColor(.black)
+                                        Spacer()
+                                    }
+                                    
+                                    .padding()
+                                    .background(Color.gray.opacity(0.1))
+                                    .cornerRadius(10)
                                 }
-                                .padding()
-                                .background(Color.gray.opacity(0.1))
-                                .cornerRadius(10)
+                                
                             }
                             HStack {
                                 Text("Actionas")
@@ -95,7 +99,7 @@ struct LinearProgressView: View {
                 RoundedRectangle(cornerRadius: 8)
                     .frame(height: 10)
                     .foregroundColor(Color.gray.opacity(0.2))
-
+                
                 // Foreground (Progress) Bar
                 GeometryReader { geometry in
                     RoundedRectangle(cornerRadius: 8)
