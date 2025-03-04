@@ -12,6 +12,7 @@ class ConceptViewModel: ObservableObject {
     @Published var categories: [ConceptCategory] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
+    @Published var progress: Double = 0.0
     
     // For AI answers
     @Published var answers: [ConceptAnswer] = []
@@ -34,8 +35,9 @@ class ConceptViewModel: ObservableObject {
             DispatchQueue.main.async {
                 self.isLoading = false
                 switch result {
-                case .success(let categories):
-                    self.categories = categories
+                case .success(let response):
+                    self.categories = response.categories
+                    self.progress = response.progress ?? 0.0  // Store progress
                 case .failure(let error):
                     self.errorMessage = error.localizedDescription
                 }

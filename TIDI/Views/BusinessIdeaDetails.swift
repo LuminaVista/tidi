@@ -161,5 +161,5 @@ struct StageRowView: View {
 
 
 #Preview {
-    BusinessIdeaDetails(ideaId: 20)
+    BusinessIdeaDetails(ideaId: 24)
 }

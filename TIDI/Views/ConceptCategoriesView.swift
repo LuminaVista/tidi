@@ -44,7 +44,7 @@ struct ConceptCategoriesView: View {
                         
                         // show the progress bar here:
                         HStack{
-                            LinearProgressView(progress: progress)
+                            LinearProgressView(progress: viewModel.progress)
                         }
                         .padding(.top,30)
                         
@@ -127,5 +127,5 @@ struct LinearProgressView: View {
 
 
 #Preview {
-    ConceptCategoriesView(businessIdeaId: 22, progress: 30)
+    ConceptCategoriesView(businessIdeaId: 24, progress: 0)
 }

@@ -20,10 +20,12 @@ struct ConceptCategory: Identifiable, Codable {
 }
 
 struct ConceptCategoryResponse: Codable {
+    let progress: Double?
     let businessIdeaId: Int?
     let categories: [ConceptCategory]
 
     enum CodingKeys: String, CodingKey {
+        case progress = "progress"
         case businessIdeaId = "business_idea_id"
         case categories
     }
