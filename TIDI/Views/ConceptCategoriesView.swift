@@ -65,8 +65,11 @@ struct ConceptCategoriesView: View {
                                 
                             }
                             HStack {
-                                Text("Actionas")
-                                    .font(.headline)
+                                NavigationLink(destination: ConceptTaskView(businessIdeaID: businessIdeaId)){
+                                    Text("Actionas")
+                                        .font(.headline)
+                                        .foregroundColor(.black)
+                                }
                                 Spacer()
                             }
                             .padding()
@@ -124,5 +127,5 @@ struct LinearProgressView: View {
 
 
 #Preview {
-    ConceptCategoriesView(businessIdeaId: 20, progress: 30)
+    ConceptCategoriesView(businessIdeaId: 22, progress: 30)
 }

@@ -54,3 +54,53 @@ struct ConceptAnswer: Codable, Identifiable {
             .map { String($0.dropFirst(2)) }
     }
 }
+
+// TASK RELATED
+// Main Response Model
+struct TaskResponse: Codable {
+    let businessIdeaID: Int
+    let conceptID: Int
+    let tasks: [Task]
+    
+    // Map JSON keys to Swift properties (if needed)
+    enum CodingKeys: String, CodingKey {
+        case businessIdeaID = "business_idea_id"
+        case conceptID = "concept_id"
+        case tasks
+    }
+}
+
+// Task Model
+struct Task: Codable, Identifiable {
+    let id: Int
+    let taskDescription: String
+    let taskStatus: Bool
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case taskDescription = "task_description"
+        case taskStatus = "task_status"
+    }
+    
+    // Convert task_status from Int (0/1) to Bool
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(Int.self, forKey: .id)
+        taskDescription = try container.decode(String.self, forKey: .taskDescription)
+        let statusInt = try container.decode(Int.self, forKey: .taskStatus)
+        taskStatus = statusInt == 1 // Convert 0 to false, 1 to true
+    }
+    
+    // Convert Bool to Int when encoding
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(taskDescription, forKey: .taskDescription)
+        try container.encode(taskStatus ? 1 : 0, forKey: .taskStatus)
+    }
+}
+
+struct TaskCompletionResponse: Codable {
+    let task_id: Int?
+    let message: String
+}

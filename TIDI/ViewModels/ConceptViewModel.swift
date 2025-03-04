@@ -19,6 +19,12 @@ class ConceptViewModel: ObservableObject {
     @Published var isLoadingAnswers = false
     @Published var answersErrorMessage: String?
     
+    // TASK RELATED
+    @Published var tasks: [Task] = []
+    @Published var isLoadingTask = false
+    @Published var taskErrorMessage: String?
+    
+    
     
     func loadConceptCategories(businessIdeaId: Int) {
         isLoading = true
@@ -52,6 +58,45 @@ class ConceptViewModel: ObservableObject {
                     self.answers = response.answers
                 case .failure(let error):
                     self.answersErrorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    
+    // TASK RELATED
+    func fetchTasks(businessIdeaID: Int) {
+        isLoadingTask = true
+        taskErrorMessage = nil
+        
+        ConceptService.fetchTasks(businessIdeaID: businessIdeaID) { result in
+            DispatchQueue.main.async {
+                self.isLoadingTask = false
+                switch result {
+                case .success(let fetchedTasks):
+                    self.tasks = fetchedTasks.filter { !$0.taskStatus } // Show only tasks that are not done
+                case .failure(let error):
+                    self.taskErrorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    // Edit task
+    // Mark task as complete
+    func completeTask(businessIdeadID: Int, taskID: Int) {
+        ConceptService.completeTask(businessIdeadID: businessIdeadID, taskID: taskID) { result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let completedTaskID):
+                    if let index = self.tasks.firstIndex(where: { $0.id == completedTaskID }) {
+                        self.tasks.remove(at: index) // Safer removal
+                    } else {
+                        print("Warning: Task ID \(completedTaskID) not found in the local task list.")
+                    }
+                    
+                case .failure(let error):
+                    self.taskErrorMessage = error.localizedDescription
                 }
             }
         }
