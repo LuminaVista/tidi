@@ -43,3 +43,8 @@ struct SingleBusinessIdeaDetailsResponse: Codable {
     let businessIdea: BusinessIdea
     let stages: [Stage]
 }
+
+
+struct BusinessIdeaStatusResponse: Codable{
+    let message: String
+}

@@ -9,8 +9,9 @@ import SwiftUI
 
 struct BusinessIdeaCreateView: View {
     @Environment(\.dismiss) private var dismiss // Modern back navigation method
-    @StateObject private var viewModel = BusinessIdeaViewModel()
+    //    @StateObject private var viewModel = BusinessIdeaViewModel()
     @State private var navigateFromBICreateToHome = false  // Track navigation state
+    @ObservedObject var viewModel: BusinessIdeaViewModel
     
     var body: some View {
         NavigationView {
@@ -61,7 +62,8 @@ struct BusinessIdeaCreateView: View {
                             
                             // Submit Button
                             Button(action: {
-                                viewModel.submitIdea()
+                                 viewModel.submitIdea()
+                                
                             }) {
                                 Text("Submit Idea")
                                     .fontWeight(.bold)
@@ -88,9 +90,12 @@ struct BusinessIdeaCreateView: View {
                 HomeView()  // Navigate to HomeView when logged in
             }
             .onChange(of: viewModel.isLoadingBICreate){
-                if viewModel.isLoadingBICreate{
-                    navigateFromBICreateToHome = true
-                }
+//                if viewModel.isLoadingBICreate{
+//                    navigateFromBICreateToHome = true
+//                }
+                if viewModel.biCreateSuccess == true {
+                        dismiss()
+                    }
             }
         }
         .navigationBarBackButtonHidden(true)
@@ -145,5 +150,5 @@ struct CustomeTextFieldBusinessIdeaCreate: View {
 }
 
 #Preview {
-    BusinessIdeaCreateView()
+    BusinessIdeaCreateView(viewModel: BusinessIdeaViewModel())
 }

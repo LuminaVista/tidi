@@ -30,6 +30,11 @@ class BusinessIdeaViewModel: ObservableObject {
     @Published var isLoadingSingleBusinessDetails = false
     @Published var errorMessageSingleBusinessDetails: String?
     
+    // BusinessIdea Status related
+    @Published var isLoadingIdeaStatus = false
+    @Published var errorMessageIdeaStatus: String?
+    @Published var feedbackMessageIdeaStatus: String?
+    
     func loadBusinessIdeas() {
         isLoading = true
         BusinessIdeaService.shared.fetchBusinessIdeas { [weak self] result in
@@ -65,6 +70,9 @@ class BusinessIdeaViewModel: ObservableObject {
                 switch result {
                 case .success(let response):
                     self.biCreateSuccess = response.success
+                    if response.success {
+                        self.loadBusinessIdeas()  // 🔹 Refresh the list after creation
+                    }
                 case .failure(let error):
                     self.errorMessageBICreate = "Error: \(error.localizedDescription)"
                 }
@@ -91,7 +99,22 @@ class BusinessIdeaViewModel: ObservableObject {
     }
     
     
-    
+    func toggleBusinessIdeaStatus(businessIdeaId: Int) {
+        isLoadingIdeaStatus = true
+        errorMessageIdeaStatus = nil
+        
+        BusinessIdeaService.shared.toggleBusinessIdeaStatus(business_idea_id: businessIdeaId) { result in
+            DispatchQueue.main.async {
+                self.isLoadingIdeaStatus = false
+                switch result {
+                case .success(let response):
+                    self.feedbackMessageIdeaStatus = response.message
+                case .failure(let error):
+                    self.errorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
     
     
     

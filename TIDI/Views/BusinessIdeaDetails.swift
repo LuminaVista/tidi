@@ -9,7 +9,7 @@ import SwiftUI
 
 struct BusinessIdeaDetails: View {
     @Environment(\.dismiss) private var dismiss // Modern back navigation method
-    @StateObject private var viewModel = BusinessIdeaViewModel()
+    @ObservedObject var viewModel: BusinessIdeaViewModel
     let ideaId: Int
     
     var body: some View {
@@ -52,17 +52,34 @@ struct BusinessIdeaDetails: View {
                             // Text("Progress: \(Int(idea.idea_progress))%")
                             // Stages with progress
                             LazyVStack {
-                                    ForEach(viewModel.stages, id: \.id) { stage in
-                                        if let destination = StageNavigationManager.getView(for: stage.stage_name, businessIdeaId: idea.business_idea_id, progress: stage.progress) {
-                                            NavigationLink(destination: destination) {
-                                                StageRowView(stage: stage)
-                                            }
-                                            .buttonStyle(.plain) // Ensures proper tap detection
-                                        } else {
+                                ForEach(viewModel.stages, id: \.id) { stage in
+                                    if let destination = StageNavigationManager.getView(for: stage.stage_name, businessIdeaId: idea.business_idea_id, progress: stage.progress) {
+                                        NavigationLink(destination: destination) {
                                             StageRowView(stage: stage)
                                         }
+                                        .buttonStyle(.plain) // Ensures proper tap detection
+                                    } else {
+                                        StageRowView(stage: stage)
                                     }
                                 }
+                            }
+                            // Here add a button: which will be labeled as "Make the idea Inactive" (if the idea is active)
+                            // or will be labeled as "Make the idea Active" (if the idea is Inactive)
+                            Button(action: {
+                                viewModel.toggleBusinessIdeaStatus(businessIdeaId: idea.business_idea_id)
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                    dismiss()
+                                }
+                            }) {
+                                Text(idea.isActive == 1 ? "Make the idea Inactive" : "Make the idea Active")
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(idea.isActive == 1 ? Color.gray : Color(hex: "#DDD4C8"))
+                                    .foregroundColor(.black)
+                                    .cornerRadius(10)
+                                    .font(.headline)
+                            }
+                            .padding(.top, 10)
                         }
                         .padding()
                     }
@@ -89,8 +106,8 @@ struct StageNavigationManager {
     static func getView(for stageName: String, businessIdeaId: Int, progress: Double) -> AnyView? {
         let mapping: [String: AnyView] = [
             "Concept": AnyView(ConceptCategoriesView(businessIdeaId: businessIdeaId, progress: progress))
-//            "Research": AnyView(ResearchView(businessIdeaId: String(businessIdeaId))),
-//            "Branding": AnyView(BrandingView(businessIdeaId: String(businessIdeaId)))
+            //            "Research": AnyView(ResearchView(businessIdeaId: String(businessIdeaId))),
+            //            "Branding": AnyView(BrandingView(businessIdeaId: String(businessIdeaId)))
         ]
         return mapping[stageName]
     }
@@ -161,5 +178,5 @@ struct StageRowView: View {
 
 
 #Preview {
-    BusinessIdeaDetails(ideaId: 24)
+    BusinessIdeaDetails(viewModel: BusinessIdeaViewModel(), ideaId: 24)
 }

@@ -44,14 +44,14 @@ struct HomeView: View {
                         ScrollView {
                             VStack(spacing: 15) {
                                 ForEach(filteredIdeas, id: \.id) { idea in
-                                    BusinessIdeaCard(idea: idea)
+                                    BusinessIdeaCard(idea: idea,viewModel: viewModel)
                                 }
                             }
                             .padding(.horizontal)
                         }
                         .frame(maxHeight: .infinity)
                         // "New Concept" Button
-                        NavigationLink(destination: BusinessIdeaCreateView()) {
+                        NavigationLink(destination: BusinessIdeaCreateView(viewModel: viewModel)) {
                             HStack {
                                 Image(systemName: "plus.circle")
                                     .foregroundColor(.black)
@@ -90,10 +90,11 @@ struct HomeView: View {
 // Business Idea Card Component
 struct BusinessIdeaCard: View {
     var idea: BusinessIdea
+    var viewModel: BusinessIdeaViewModel // Pass view model
     
     var body: some View {
         
-        NavigationLink(destination: BusinessIdeaDetails(ideaId: idea.business_idea_id)) {
+        NavigationLink(destination: BusinessIdeaDetails(viewModel: viewModel, ideaId: idea.business_idea_id)) {
             
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
