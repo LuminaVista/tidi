@@ -52,8 +52,6 @@ struct LoginView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 100, height: 100)
-                    
-                    
                 }
                 .onChange(of: loginViewModel.isLoggedIn){
                     if loginViewModel.isLoggedIn{
