@@ -99,6 +99,7 @@ struct ConceptTaskView: View {
                                 }) {
                                     Text("Cancel")
                                         .foregroundColor(.red)
+                                        .fontWeight(.semibold)
                                         .padding()
                                         .frame(maxWidth: .infinity)
                                         .background(Color.gray.opacity(0.2))
@@ -112,10 +113,11 @@ struct ConceptTaskView: View {
                                     newTaskDescription = "" // Reset input
                                 }) {
                                     Text("Add Task")
-                                        .foregroundColor(.white)
+                                        .foregroundColor(.black)
+                                        .fontWeight(.semibold)
                                         .padding()
                                         .frame(maxWidth: .infinity)
-                                        .background(Color.blue)
+                                        .background(Color(hex: "#DDD4C8"))
                                         .cornerRadius(10)
                                 }
                             }
@@ -127,10 +129,11 @@ struct ConceptTaskView: View {
                             isAddingTask = true // Show input field
                         }) {
                             Text("Create Task")
-                                .foregroundColor(.white)
+                                .foregroundColor(.black)
+                                .fontWeight(.semibold)
                                 .padding()
                                 .frame(maxWidth: .infinity)
-                                .background(Color.blue)
+                                .background(Color(hex: "#DDD4C8"))
                                 .cornerRadius(10)
                         }
                         .padding()
