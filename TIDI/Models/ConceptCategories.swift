@@ -106,3 +106,25 @@ struct TaskCompletionResponse: Codable {
     let task_id: Int?
     let message: String
 }
+
+// User gen task
+struct UserGenConceptTask: Identifiable, Codable {
+    let id: Int
+    let conceptID: Int
+    let businessIdeaID: Int
+    let taskDescription: String
+    let taskStatus: Int // 0 = Incomplete, 1 = Complete
+
+    enum CodingKeys: String, CodingKey {
+        case id
+        case conceptID = "concept_id"
+        case businessIdeaID = "business_idea_id"
+        case taskDescription = "task_description"
+        case taskStatus = "task_status"
+    }
+}
+
+struct UserGenConceptTaskResponse: Codable {
+    let message: String
+    let task: UserGenConceptTask
+}

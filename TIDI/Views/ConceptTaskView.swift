@@ -10,6 +10,8 @@ import SwiftUI
 struct ConceptTaskView: View {
     @Environment(\.dismiss) private var dismiss // Modern back navigation method
     @StateObject private var viewModel = ConceptViewModel()
+    @State private var isAddingTask = false // Tracks whether user is adding a new task
+    @State private var newTaskDescription = "" // Stores new task input
     let businessIdeaID: Int // Passed from parent view
     
     var body: some View {
@@ -71,11 +73,6 @@ struct ConceptTaskView: View {
                 } else {
                     ScrollView {
                         VStack(spacing: 12) {
-//                            ForEach(viewModel.tasks, id: \.id) { task in
-//                                TaskCard(task: task) {
-//                                    viewModel.completeTask(businessIdeadID: businessIdeaID, taskID: task.id)
-//                                }
-//                            }
                             ForEach(Array(viewModel.tasks.enumerated()), id: \.element.id) { index, task in
                                 TaskCard(
                                     title: generateTitle(index: index), // Assign A’s, B’s, or C’s
@@ -87,6 +84,57 @@ struct ConceptTaskView: View {
                             }
                         }
                     }
+                    // Add a "Create Task" button upon which user can click and a textfield along with "Add Task" button will arrive
+                    // The "Create Task" button will disappear. and upon the click on "Add Task" the addTask function will be called.
+                    if isAddingTask {
+                        VStack {
+                            TextField("Enter new task", text: $newTaskDescription)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .padding()
+                            
+                            HStack {
+                                Button(action: {
+                                    isAddingTask = false // Hide input field
+                                    newTaskDescription = "" // Clear input
+                                }) {
+                                    Text("Cancel")
+                                        .foregroundColor(.red)
+                                        .padding()
+                                        .frame(maxWidth: .infinity)
+                                        .background(Color.gray.opacity(0.2))
+                                        .cornerRadius(10)
+                                }
+                                
+                                Button(action: {
+                                    viewModel.addTask(businessIdeaID: businessIdeaID, taskDescription: newTaskDescription)
+                                    viewModel.fetchTasks(businessIdeaID: businessIdeaID) // Add this line
+                                    isAddingTask = false
+                                    newTaskDescription = "" // Reset input
+                                }) {
+                                    Text("Add Task")
+                                        .foregroundColor(.white)
+                                        .padding()
+                                        .frame(maxWidth: .infinity)
+                                        .background(Color.blue)
+                                        .cornerRadius(10)
+                                }
+                            }
+                            .padding(.horizontal)
+                        }
+                        .padding()
+                    } else {
+                        Button(action: {
+                            isAddingTask = true // Show input field
+                        }) {
+                            Text("Create Task")
+                                .foregroundColor(.white)
+                                .padding()
+                                .frame(maxWidth: .infinity)
+                                .background(Color.blue)
+                                .cornerRadius(10)
+                        }
+                        .padding()
+                    }
                 }
             }
             .onAppear {
@@ -97,34 +145,6 @@ struct ConceptTaskView: View {
     }
     
 }
-
-//struct TaskCard: View {
-//    let task: Task
-//    let markAsDone: () -> Void
-//    
-//    var body: some View {
-//        VStack(alignment: .leading, spacing: 10) {
-//            Text(task.taskDescription)
-//                .font(.system(size: 18))
-//                .foregroundColor(.primary)
-//                .padding(.bottom, 10)
-//            
-//            Button(action: markAsDone) {
-//                Text("Mark as Done")
-//                    .foregroundColor(.black)
-//                    .fontWeight(.semibold)
-//                    .padding()
-//                    .frame(maxWidth: .infinity)
-//                    .background(Color(hex: "#DDD4C8"))
-//                    .cornerRadius(8)
-//            }
-//        }
-//        .padding()
-//        .background(RoundedRectangle(cornerRadius: 12).fill(Color(hex:"#09010E1F")))
-//        .padding(.horizontal)
-//    }
-//}
-
 
 struct TaskCard: View {
     let title: String
@@ -189,14 +209,14 @@ struct TaskCard: View {
 
 func generateTitle(index: Int) -> String {
     let titles = ["A’s", "B’s", "C’s"]
-    return titles[index % titles.count] // Cycles through A, B, C
+    return index < titles.count ? titles[index] : "User Generated Task"
 }
 
 func generateIcon(index: Int) -> String {
-    let icons = ["clock", "brain.head.profile", "lightbulb"] // Example icons
-    return icons[index % icons.count] // Cycles through different icons
+    let icons = ["clock", "brain.head.profile", "lightbulb"]
+    return index < icons.count ? icons[index] : "plus.square" // Generic icon for user-generated tasks
 }
 
 #Preview {
-    ConceptTaskView(businessIdeaID: 22)
+    ConceptTaskView(businessIdeaID: 25)
 }

@@ -27,6 +27,8 @@ class ConceptViewModel: ObservableObject {
     
     
     
+    
+    
     func loadConceptCategories(businessIdeaId: Int) {
         isLoading = true
         errorMessage = nil
@@ -99,6 +101,45 @@ class ConceptViewModel: ObservableObject {
                     
                 case .failure(let error):
                     self.taskErrorMessage = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    
+    // User gen concept task
+    @Published var userGenTask: [UserGenConceptTask] = []
+    @Published var userGenTaskIsLoading = false
+    @Published var userGenTaskErrorMessage: String?
+    @Published var userGenTaskSuccessMessage: String?
+    
+    
+    // user gen task
+    func addTask(businessIdeaID: Int, taskDescription: String) {
+        guard !taskDescription.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            // Optional: Prevent adding empty tasks
+            return
+        }
+        
+        userGenTaskIsLoading = true
+        userGenTaskErrorMessage = nil
+        userGenTaskSuccessMessage = nil
+        
+        ConceptService.shared.addTask(businessIdeaID: businessIdeaID, taskDescription: taskDescription) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.userGenTaskIsLoading = false
+                switch result {
+                case .success(let response):
+                    self?.userGenTask.append(response.task)
+                    self?.userGenTaskSuccessMessage = response.message
+                    
+                    // Fetch tasks with a small delay to ensure server has processed the new task
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        self?.fetchTasks(businessIdeaID: businessIdeaID)
+                    }
+                    
+                case .failure(let error):
+                    self?.userGenTaskErrorMessage = error.localizedDescription
                 }
             }
         }

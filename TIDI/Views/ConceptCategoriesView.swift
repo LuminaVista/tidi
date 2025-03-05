@@ -127,5 +127,5 @@ struct LinearProgressView: View {
 
 
 #Preview {
-    ConceptCategoriesView(businessIdeaId: 24, progress: 0)
+    ConceptCategoriesView(businessIdeaId: 25, progress: 0)
 }

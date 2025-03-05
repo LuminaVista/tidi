@@ -38,9 +38,9 @@ struct ConceptService{
                 return
             }
             
-//            if let jsonString = String(data: data, encoding: .utf8) {
-//                print("API Response JSON: \(jsonString)")
-//            }
+            //            if let jsonString = String(data: data, encoding: .utf8) {
+            //                print("API Response JSON: \(jsonString)")
+            //            }
             
             do {
                 let decoder = JSONDecoder()
@@ -153,15 +153,15 @@ struct ConceptService{
                 completion(.failure(error))
                 return
             }
-
+            
             guard let data = data else {
                 completion(.failure(NSError(domain: "", code: -1, userInfo: [NSLocalizedDescriptionKey: "No data received from server"])))
                 return
             }
-
+            
             // Debugging: Print raw response
             print("Raw Response:", String(data: data, encoding: .utf8) ?? "Invalid Data")
-
+            
             do {
                 let responseDict = try JSONDecoder().decode(TaskCompletionResponse.self, from: data)
                 if let taskID = responseDict.task_id {
@@ -177,7 +177,57 @@ struct ConceptService{
     
     
     
-    
+    // User gen tasks
+    func addTask(businessIdeaID: Int, taskDescription: String, completion: @escaping (Result<UserGenConceptTaskResponse, Error>) -> Void) {
+        guard let url = URL(string: "\(Constants.baseURL)/concept/task/add/\(businessIdeaID)") else {
+            completion(.failure(NSError(domain: "Invalid URL", code: -1)))
+            return
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        if let token = KeychainHelper.shared.getToken(forKey: "userAuthToken") {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        
+        let body: [String: Any] = ["task_description": taskDescription]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+        
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+                return
+            }
+            
+            guard let data = data else {
+                DispatchQueue.main.async {
+                    completion(.failure(NSError(domain: "No data received", code: -1)))
+                }
+                return
+            }
+            
+            do {
+                let decodedResponse = try JSONDecoder().decode([String: UserGenConceptTaskResponse].self, from: data)
+                if let task = decodedResponse["task"] {
+                    DispatchQueue.main.async {
+                        completion(.success(task))
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        completion(.failure(NSError(domain: "Invalid response format", code: -1)))
+                    }
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+            }
+        }.resume()
+    }
     
     
     
