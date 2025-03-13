@@ -8,6 +8,6 @@
 import Foundation
 
 struct Constants {
-    static let baseURL = "http://172.20.10.2:3000/api"
+    static let baseURL = "https://tidibe.shafthinks.xyz/api"
 }
 
