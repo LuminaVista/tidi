@@ -135,6 +135,7 @@ struct CustomeTextFieldBusinessIdeaCreate: View {
             } else {
                 TextField("", text: $text)
                     .padding()
+                    .foregroundColor(.black)
                     .background(Color.white)
                     .cornerRadius(10)
             }

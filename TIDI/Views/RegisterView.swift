@@ -95,8 +95,10 @@ struct CustomTextField: View {
         Group {
             if isSecure {
                 SecureField(placeholder, text: $text)
+                    .foregroundStyle(.black)
             } else {
                 TextField(placeholder, text: $text)
+                    .foregroundColor(.black)
                     .autocapitalization(.none) // Prevents auto-capitalization
             }
         }
