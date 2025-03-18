@@ -11,7 +11,8 @@ import SwiftUI
 struct TIDIApp: App {
     var body: some Scene {
         WindowGroup {
-            SplashScreenView() 
+            SplashScreenView()
+                .preferredColorScheme(.light)
         }
     }
 }
