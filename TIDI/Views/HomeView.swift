@@ -51,7 +51,7 @@ struct HomeView: View {
                         }
                         .frame(maxHeight: .infinity)
                         // "New Concept" Button
-                        NavigationLink(destination: BusinessIdeaCreateView(viewModel: viewModel)) {
+                        NavigationLink(destination: BusinessIdeaCreateView(viewModel: BusinessIdeaViewModel())) {
                             HStack {
                                 Image(systemName: "plus.circle")
                                     .foregroundColor(.black)

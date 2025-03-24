@@ -12,6 +12,7 @@ struct ConceptTaskView: View {
     @StateObject private var viewModel = ConceptViewModel()
     @State private var isAddingTask = false // Tracks whether user is adding a new task
     @State private var newTaskDescription = "" // Stores new task input
+    @State private var refreshTasks = false // Track if tasks are updated
     let businessIdeaID: Int // Passed from parent view
     
     var body: some View {
@@ -143,6 +144,11 @@ struct ConceptTaskView: View {
             .onAppear {
                 viewModel.fetchTasks(businessIdeaID: businessIdeaID)
             }
+            // Updated `onChange` implementation
+            .onChange(of: refreshTasks) { oldValue, newValue in
+                // This will trigger a refresh of the task list
+                viewModel.fetchTasks(businessIdeaID: businessIdeaID)
+            }
             .navigationBarBackButtonHidden(true)
         }
     }
@@ -221,5 +227,5 @@ func generateIcon(index: Int) -> String {
 }
 
 #Preview {
-    ConceptTaskView(businessIdeaID: 25)
+    ConceptTaskView(businessIdeaID: 13)
 }
