@@ -37,6 +37,7 @@ struct LoginView: View {
                         ProgressView()
                             .padding()
                     }
+                    
                     Button(action: {
                         loginViewModel.login()
                     }) {
@@ -50,10 +51,19 @@ struct LoginView: View {
                     .padding(.horizontal)
                     .disabled(loginViewModel.isLoading)
                     
+                    Button(action: {
+                        loginViewModel.errorMessage = nil
+                    }) {
+                        NavigationLink("Forgot Password?", destination: ResetPasswordView())
+                            .font(.footnote)
+                            .foregroundColor(.blue)
+                    }
+                    
                     Image("tidi_sun")  // Add your logo to Assets
                         .resizable()
                         .scaledToFit()
                         .frame(width: 100, height: 100)
+                    
                 }
                 .onChange(of: loginViewModel.isLoggedIn){
                     if loginViewModel.isLoggedIn{
