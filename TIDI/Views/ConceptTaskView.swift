@@ -29,7 +29,7 @@ struct ConceptTaskView: View {
                     .padding(.leading, 15)
                     .padding(.top, 10)
                     Spacer()
-                    Text("Actiona")
+                    Text("Actions")
                         .font(.title)
                         .fontWeight(.bold)
                         .padding(.trailing, 20)
