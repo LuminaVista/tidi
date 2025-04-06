@@ -105,8 +105,8 @@ struct BusinessIdeaDetails: View {
 struct StageNavigationManager {
     static func getView(for stageName: String, businessIdeaId: Int, progress: Double) -> AnyView? {
         let mapping: [String: AnyView] = [
-            "Concept": AnyView(ConceptCategoriesView(businessIdeaId: businessIdeaId, progress: progress))
-            //            "Research": AnyView(ResearchView(businessIdeaId: String(businessIdeaId))),
+            "Concept": AnyView(ConceptCategoriesView(businessIdeaId: businessIdeaId, progress: progress)),
+            "Research": AnyView(ResearchCategoriesView(businessIdeaId: businessIdeaId, progress: progress)),
             //            "Branding": AnyView(BrandingView(businessIdeaId: String(businessIdeaId)))
         ]
         return mapping[stageName]
@@ -178,5 +178,5 @@ struct StageRowView: View {
 
 
 #Preview {
-    BusinessIdeaDetails(viewModel: BusinessIdeaViewModel(), ideaId: 24)
+    BusinessIdeaDetails(viewModel: BusinessIdeaViewModel(), ideaId: 84)
 }
