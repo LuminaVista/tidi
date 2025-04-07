@@ -1,28 +1,28 @@
 //
-//  ResearchViewModel.swift
+//  MarketingViewModel.swift
 //  TIDI
 //
-//  Created by Shafayet Ul Islam on 6/4/2025.
+//  Created by Shafayet Ul Islam on 7/4/2025.
 //
 
 import Foundation
 
 
-class ResearchViewModel: ObservableObject {
+class MarketingViewModel: ObservableObject{
     
     
     // Category related
-    @Published var categories: [ResearchCategory] = []
+    @Published var categories: [MarketingCategory] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var progress: Double = 0.0
     
     
-    func loadResearchCategories(businessIdeaId: Int) {
+    func loadMarketingCategories(businessIdeaId: Int) {
         isLoading = true
         errorMessage = nil
         
-        ResearchService.shared.fetchResearchCategories(businessIdeaId: businessIdeaId) { result in
+        MarketingService.shared.fetchMarketingCategories(businessIdeaId: businessIdeaId) { result in
             DispatchQueue.main.async {
                 self.isLoading = false
                 switch result {
@@ -36,19 +36,18 @@ class ResearchViewModel: ObservableObject {
         }
     }
     
-    
     // For AI answers
-    @Published var answers: [ResearchAnswer] = []
+    @Published var answers: [MarketingAnswer] = []
     @Published var categoryName: String = ""
     @Published var isLoadingAnswers = false
     @Published var answersErrorMessage: String?
     
     // ai generated answer view model
-    func loadAIAnswers(businessIdeaId: Int, researchCatId: Int) {
+    func loadAIAnswers(businessIdeaId: Int, marketingCatId: Int) {
         isLoadingAnswers = true
         answersErrorMessage = nil
         
-        ResearchService.shared.fetchAIAnswers(businessIdeaId: businessIdeaId, researchCatId: researchCatId) { result in
+        MarketingService.shared.fetchAIAnswers(businessIdeaId: businessIdeaId, marketingCatId: marketingCatId) { result in
             DispatchQueue.main.async {
                 self.isLoadingAnswers = false
                 switch result {
@@ -63,7 +62,7 @@ class ResearchViewModel: ObservableObject {
     }
     
     // TASK RELATED
-    @Published var tasks: [ResearchTask] = []
+    @Published var tasks: [MarketingTask] = []
     @Published var isLoadingTask = false
     @Published var taskErrorMessage: String?
     
@@ -72,7 +71,7 @@ class ResearchViewModel: ObservableObject {
         isLoadingTask = true
         taskErrorMessage = nil
         
-        ResearchService.fetchTasks(businessIdeaID: businessIdeaID) { result in
+        MarketingService.fetchTasks(businessIdeaID: businessIdeaID) { result in
             DispatchQueue.main.async {
                 self.isLoadingTask = false
                 switch result {
@@ -85,10 +84,11 @@ class ResearchViewModel: ObservableObject {
         }
     }
     
+    
     // Edit task
     // Mark task as complete
     func completeTask(businessIdeadID: Int, taskID: Int) {
-        ResearchService.completeTask(businessIdeadID: businessIdeadID, taskID: taskID) { result in
+        MarketingService.completeTask(businessIdeadID: businessIdeadID, taskID: taskID) { result in
             DispatchQueue.main.async {
                 switch result {
                 case .success(let completedTaskID):
@@ -105,8 +105,9 @@ class ResearchViewModel: ObservableObject {
         }
     }
     
-    // User gen research task
-    @Published var userGenTask: [UserGenResearchTask] = []
+    
+    // User gen marketing task
+    @Published var userGenTask: [UserGenMarketingTask] = []
     @Published var userGenTaskIsLoading = false
     @Published var userGenTaskErrorMessage: String?
     @Published var userGenTaskSuccessMessage: String?
@@ -123,7 +124,7 @@ class ResearchViewModel: ObservableObject {
         userGenTaskErrorMessage = nil
         userGenTaskSuccessMessage = nil
         
-        ResearchService.shared.addTask(businessIdeaID: businessIdeaID, taskDescription: taskDescription) { [weak self] result in
+        MarketingService.shared.addTask(businessIdeaID: businessIdeaID, taskDescription: taskDescription) { [weak self] result in
             DispatchQueue.main.async {
                 self?.userGenTaskIsLoading = false
                 switch result {
@@ -144,7 +145,8 @@ class ResearchViewModel: ObservableObject {
     }
 
     
+    
+    
+    
 }
-
-
 
