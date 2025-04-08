@@ -60,5 +60,13 @@ class LoginViewModel: ObservableObject{
         }
     }
     
+    func logout() {
+        // Remove token from Keychain
+        KeychainHelper.shared.deleteToken(forKey: "userAuthToken")
+        
+        // Set login state to false
+        isLoggedIn = false
+    }
+    
     
 }

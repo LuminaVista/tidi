@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct HomeView: View {
+    
+    var onLogout: () -> Void
+    
     @StateObject private var viewModel = BusinessIdeaViewModel()
+    @StateObject private var viewModelUserLoginHandle = LoginViewModel()
     @State private var selectedTab = 1  // 1 for Active, 0 for Inactive
     
     var body: some View {
@@ -21,12 +25,31 @@ struct HomeView: View {
                 VStack(spacing: 0) {
                     // Logo at the Top
                     VStack {
-                        Image("app_logo") // Ensure it's in Assets
-                            .resizable()
-                            .scaledToFit()
-                            .frame(height: 40)
-                            .padding(.top, 20) // Adjust based on safe area
-                            .padding(.bottom, 10) // Adjust based on safe area
+                        HStack{
+                            Spacer()
+                            Image("app_logo") // Ensure it's in Assets
+                                .resizable()
+                                .scaledToFit()
+                                .frame(height: 40)
+                                .padding(.top, 20) // Adjust based on safe area
+                                .padding(.bottom, 10) // Adjust based on safe area
+                                .padding(.leading, 50)
+                            Spacer()
+                            // Logout Button
+                            Button(action: {
+                                viewModelUserLoginHandle.logout()
+                                onLogout() // 👈 go back to LoginView
+                            }) {
+                                Image(systemName: "rectangle.portrait.and.arrow.right")
+                                    .foregroundColor(.black)
+                                    .fontWeight(.bold)
+                            }
+                            .padding(.trailing, 20)
+                            .padding(.top, 20)
+                        }
+                        
+                        
+                        
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.bottom, 10) // Space below the logo
@@ -162,5 +185,5 @@ struct CircularProgressView: View {
 }
 
 #Preview {
-    HomeView()
+    HomeView(onLogout: {})
 }

@@ -70,9 +70,19 @@ struct LoginView: View {
                         navigateToHome = true
                     }
                 }
+                .onChange(of: navigateToHome) {
+                    if !navigateToHome {
+                        loginViewModel.email = ""
+                        loginViewModel.password = ""
+                        loginViewModel.errorMessage = nil
+                    }
+                }
             }
             .navigationDestination(isPresented: $navigateToHome) {
-                HomeView()  // Navigate to HomeView when logged in
+//                HomeView()  // Navigate to HomeView when logged in
+                HomeView(onLogout: {
+                        navigateToHome = false // 👈 takes the user back to LoginView
+                    })
             }
         }
         .navigationBarBackButtonHidden(true)

@@ -87,7 +87,7 @@ struct BusinessIdeaCreateView: View {
                 
             }
             .navigationDestination(isPresented: $navigateFromBICreateToHome) {
-                HomeView()  // Navigate to HomeView when logged in
+                HomeView(onLogout: {})  // Navigate to HomeView when logged in
             }
             .onChange(of: viewModel.isLoadingBICreate){
 //                if viewModel.isLoadingBICreate{
