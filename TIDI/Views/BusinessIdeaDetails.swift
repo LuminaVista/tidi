@@ -108,7 +108,9 @@ struct StageNavigationManager {
             "Concept": AnyView(ConceptCategoriesView(businessIdeaId: businessIdeaId, progress: progress)),
             "Research": AnyView(ResearchCategoriesView(businessIdeaId: businessIdeaId, progress: progress)),
             "Marketing": AnyView(MarketingCategoriesView(businessIdeaId: businessIdeaId, progress: progress)),
-            "Budget and Forecasting": AnyView(BudgetCategoriesView(businessIdeaId: businessIdeaId, progress: progress))
+            "Budget and Forecasting": AnyView(BudgetCategoriesView(businessIdeaId: businessIdeaId, progress: progress)),
+            "Environmental Consideration": AnyView(EnvcCategoriesView(businessIdeaId: businessIdeaId, progress: progress))
+            
             //"Branding": AnyView(BrandingView(businessIdeaId: String(businessIdeaId)))
         ]
         return mapping[stageName]
