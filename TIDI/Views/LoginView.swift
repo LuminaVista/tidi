@@ -11,8 +11,7 @@ struct LoginView: View {
     @StateObject private var loginViewModel = LoginViewModel()
     @State private var navigateToHome = false  // Track navigation state
     
-    
-    
+
     var body: some View {
         NavigationStack{
             ZStack{
@@ -33,12 +32,13 @@ struct LoginView: View {
                             .font(.footnote)
                             .padding(.horizontal)
                     }
-                    if loginViewModel.isLoading {
+                    if loginViewModel.isLoading { 
                         ProgressView()
                             .padding()
                     }
                     
                     Button(action: {
+                        navigateToHome = false
                         loginViewModel.login()
                     }) {
                         Text("Let's get started ")
@@ -67,7 +67,9 @@ struct LoginView: View {
                 }
                 .onChange(of: loginViewModel.isLoggedIn){
                     if loginViewModel.isLoggedIn{
-                        navigateToHome = true
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                                   navigateToHome = true
+                               }
                     }
                 }
                 .onChange(of: navigateToHome) {
@@ -75,13 +77,14 @@ struct LoginView: View {
                         loginViewModel.email = ""
                         loginViewModel.password = ""
                         loginViewModel.errorMessage = nil
+                        loginViewModel.isLoggedIn = false
                     }
                 }
             }
             .navigationDestination(isPresented: $navigateToHome) {
 //                HomeView()  // Navigate to HomeView when logged in
                 HomeView(onLogout: {
-                        navigateToHome = false // 👈 takes the user back to LoginView
+                        navigateToHome = false
                     })
             }
         }

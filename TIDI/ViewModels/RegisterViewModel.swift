@@ -36,7 +36,7 @@ class RegisterViewModel: ObservableObject{
                     self.isRegistered = true
                 case .failure(let error):
                     print("Registration Failed: ", error.localizedDescription)
-                    self.errorMessage = ErrorMessages.Network.requestFailed                    
+                    self.errorMessage = error.localizedDescription
                 }
             }
             

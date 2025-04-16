@@ -32,6 +32,21 @@ struct AuthenticationService{
                 completion(.failure(error))
                 return
             }
+            
+            // Ensure we have a valid HTTP response
+            if let httpResponse = response as? HTTPURLResponse {
+                print("HTTP Status Code: \(httpResponse.statusCode)")
+                
+                if httpResponse.statusCode == 409 {
+                    // Handle Unauthorized login
+                    let authError = NSError(domain: "", code: 409, userInfo: [NSLocalizedDescriptionKey: "Email already registered. Please login with the email."])
+                    completion(.failure(authError))
+                    return
+                }
+                
+            }
+            
+            
             guard let data = data else { return }
             
             do {
