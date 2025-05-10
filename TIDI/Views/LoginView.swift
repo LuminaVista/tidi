@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct LoginView: View {
+    @EnvironmentObject var appViewModel: AppViewModel // ✅ ADDED
     @StateObject private var loginViewModel = LoginViewModel()
     @State private var navigateToHome = false  // Track navigation state
     
@@ -65,11 +66,12 @@ struct LoginView: View {
                         .frame(width: 100, height: 100)
                     
                 }
-                .onChange(of: loginViewModel.isLoggedIn){
-                    if loginViewModel.isLoggedIn{
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                                   navigateToHome = true
-                               }
+                // ✅ MODIFIED: This updates global login state when user logs in
+                .onChange(of: loginViewModel.isLoggedIn) {
+                    if loginViewModel.isLoggedIn {
+                        appViewModel.isLoggedIn = true
+                        appViewModel.markFirstLaunchComplete() // ✅ ADD THIS LINE
+                        navigateToHome = true
                     }
                 }
                 .onChange(of: navigateToHome) {
@@ -81,11 +83,12 @@ struct LoginView: View {
                     }
                 }
             }
+            // ✅ MODIFIED: Uses global logout and resets state
             .navigationDestination(isPresented: $navigateToHome) {
-//                HomeView()  // Navigate to HomeView when logged in
                 HomeView(onLogout: {
-                        navigateToHome = false
-                    })
+                    appViewModel.logout() // ✅ NEW: Clears Keychain + login state
+                    navigateToHome = false
+                })
             }
         }
         .navigationBarBackButtonHidden(true)

@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct RegisterView: View {
+    @EnvironmentObject var appViewModel: AppViewModel // ✅ Add this
     @StateObject private var registerViewModel = RegisterViewModel()
     @State private var navigateToLogin = false // Track navigation
     
@@ -71,14 +72,16 @@ struct RegisterView: View {
                     
                 }
                 .padding()
-                .onChange(of: registerViewModel.isRegistered){
-                    if registerViewModel.isRegistered{
+                .onChange(of: registerViewModel.isRegistered) {
+                    if registerViewModel.isRegistered {
+                        appViewModel.markFirstLaunchComplete() // ✅ Mark app as launched
                         navigateToLogin = true
                     }
                 }
             }
             .navigationDestination(isPresented: $navigateToLogin) {
                 LoginView()
+                    .environmentObject(appViewModel) // ✅ Recommended: pass it here too
             }
         }
         .navigationBarBackButtonHidden(true)
@@ -116,4 +119,5 @@ struct CustomTextField: View {
 
 #Preview {
     RegisterView()
+        .environmentObject(AppViewModel())
 }
