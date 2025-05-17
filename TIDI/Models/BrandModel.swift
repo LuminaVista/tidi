@@ -1,28 +1,29 @@
 //
-//  EnvcModel.swift
+//  BrandModel.swift
 //  TIDI
 //
-//  Created by Shafayet Ul Islam on 9/4/2025.
+//  Created by Shafayet Ul Islam on 17/5/2025.
 //
 
 import Foundation
 
-struct EnvcCategory: Identifiable, Codable {
+struct BrandCategory: Identifiable, Codable {
     let id: Int
-    let envcId: Int
+    let brandId: Int
     let name: String
 
     enum CodingKeys: String, CodingKey {
-        case id = "envc_cat_id"
-        case envcId = "envc_id"
+        case id = "brand_cat_id"
+        case brandId = "brand_id"
         case name = "category_name"
     }
 }
 
-struct EnvcCategoryResponse: Codable {
+
+struct BrandCategoryResponse: Codable {
     let progress: Double?
     let businessIdeaId: Int?
-    let categories: [EnvcCategory]
+    let categories: [BrandCategory]
 
     enum CodingKeys: String, CodingKey {
         case progress = "progress"
@@ -32,21 +33,21 @@ struct EnvcCategoryResponse: Codable {
 }
 
 
-//Envc answer response stays under the Envc Model
-struct EnvcAnswerResponse: Codable {
+//Brand answer response stays under the Brand Model
+struct BrandAnswerResponse: Codable {
     let message: String
     let category_name: String
-    let answers: [EnvcAnswer]
+    let answers: [BrandAnswer]
 }
 
-struct EnvcAnswer: Codable, Identifiable {
+struct BrandAnswer: Codable, Identifiable {
     let question: String
     let answer: String
-    let envc_question_id: Int
-    let envc_id: Int
-    let envc_cat_id: Int
+    let brand_question_id: Int
+    let brand_id: Int
+    let brand_cat_id: Int
     
-    var id: Int { envc_question_id }
+    var id: Int { brand_question_id }
     
     // Parse bullet points from the answer string
     var bulletPoints: [String] {
@@ -57,23 +58,25 @@ struct EnvcAnswer: Codable, Identifiable {
     }
 }
 
+
 // TASK RELATED
-// Main Response Model : Envc
-struct EnvcTaskResponse: Codable {
+// Main Response Model : Brand
+struct BrandTaskResponse: Codable {
     let businessIdeaID: Int
-    let envcID: Int
-    let tasks: [EnvcTask]
+    let brandID: Int
+    let tasks: [BrandTask]
     
     // Map JSON keys to Swift properties (if needed)
     enum CodingKeys: String, CodingKey {
         case businessIdeaID = "business_idea_id"
-        case envcID = "envc_id"
+        case brandID = "brand_id"
         case tasks
     }
 }
 
+
 // Task Model
-struct EnvcTask: Codable, Identifiable {
+struct BrandTask: Codable, Identifiable {
     let id: Int
     let taskDescription: String
     let taskStatus: Bool
@@ -102,31 +105,31 @@ struct EnvcTask: Codable, Identifiable {
     }
 }
 
-struct EnvcTaskCompletionResponse: Codable {
+
+struct BrandTaskCompletionResponse: Codable {
     let task_id: Int?
     let message: String
 }
 
 
-// User gen task: Envc
-struct UserGenEnvcTask: Identifiable, Codable {
+// User gen task: Brand
+struct UserGenBrandTask: Identifiable, Codable {
     let id: Int
-    let envcID: Int
+    let brandID: Int
     let businessIdeaID: Int
     let taskDescription: String
     let taskStatus: Int // 0 = Incomplete, 1 = Complete
 
     enum CodingKeys: String, CodingKey {
         case id
-        case envcID = "envc_id"
+        case brandID = "brand_id"
         case businessIdeaID = "business_idea_id"
         case taskDescription = "task_description"
         case taskStatus = "task_status"
     }
 }
 
-struct UserGenEnvcTaskResponse: Codable {
+struct UserGenBrandTaskResponse: Codable {
     let message: String
-    let task: UserGenEnvcTask
+    let task: UserGenBrandTask
 }
-
