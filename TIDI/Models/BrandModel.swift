@@ -133,3 +133,14 @@ struct UserGenBrandTaskResponse: Codable {
     let message: String
     let task: UserGenBrandTask
 }
+
+
+struct BrandLogoResponse: Codable {
+    let businessIdeaId: Int
+    let imageUrl: String
+
+    enum CodingKeys: String, CodingKey {
+        case businessIdeaId = "business_idea_id"
+        case imageUrl = "image_url"
+    }
+}

@@ -227,5 +227,46 @@ struct BrandService{
             }
         }.resume()
     }
+    
+    // AI-LOGO-GENERATION
+    func generateBrandLogo(businessIdeaId: Int, tagline: String, palette: [String], completion: @escaping (Result<BrandLogoResponse, Error>) -> Void) {
+        guard let url = URL(string: "\(Constants.baseURL)/brand/ai/logo/\(businessIdeaId)") else {
+            completion(.failure(NSError(domain: "Invalid URL", code: -1)))
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        if let token = KeychainHelper.shared.getToken(forKey: "userAuthToken") {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+
+        let body: [String: Any] = [
+            "tagline": tagline,
+            "palette": palette
+        ]
+        request.httpBody = try? JSONSerialization.data(withJSONObject: body)
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard let data = data else {
+                completion(.failure(NSError(domain: "No data", code: -1)))
+                return
+            }
+
+            do {
+                let decoded = try JSONDecoder().decode(BrandLogoResponse.self, from: data)
+                completion(.success(decoded))
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
+    }
 
 }

@@ -144,4 +144,32 @@ class BrandViewModel: ObservableObject {
             }
         }
     }
+    
+    
+    // ai-logo-generation
+    @Published var logoImageUrl: String?
+    @Published var logoLoading: Bool = false
+    @Published var logoError: String?
+
+    func generateLogo(businessIdeaId: Int, tagline: String, palette: [String]) {
+        logoLoading = true
+        logoError = nil
+
+        BrandService.shared.generateBrandLogo(businessIdeaId: businessIdeaId, tagline: tagline, palette: palette) { result in
+            DispatchQueue.main.async {
+                self.logoLoading = false
+                switch result {
+                case .success(let response):
+                    self.logoImageUrl = response.imageUrl
+                case .failure(let error):
+                    self.logoError = error.localizedDescription
+                }
+            }
+        }
+    }
+    
+    
+    
+    
+    
 }

@@ -107,6 +107,7 @@ struct StageNavigationManager {
         let mapping: [String: AnyView] = [
             "Concept": AnyView(ConceptCategoriesView(businessIdeaId: businessIdeaId, progress: progress)),
             "Research": AnyView(ResearchCategoriesView(businessIdeaId: businessIdeaId, progress: progress)),
+            "Branding": AnyView(BrandCategoriesView(businessIdeaId: businessIdeaId, progress: progress)),
             "Marketing": AnyView(MarketingCategoriesView(businessIdeaId: businessIdeaId, progress: progress)),
             "Budget and Forecasting": AnyView(BudgetCategoriesView(businessIdeaId: businessIdeaId, progress: progress)),
             "Environmental Consideration": AnyView(EnvcCategoriesView(businessIdeaId: businessIdeaId, progress: progress))

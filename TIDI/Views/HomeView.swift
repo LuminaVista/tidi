@@ -48,8 +48,6 @@ struct HomeView: View {
                             .padding(.top, 20)
                         }
                         
-                        
-                        
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.bottom, 10) // Space below the logo
