@@ -91,7 +91,7 @@
           "localizations" : [
             {
               "description" : "",
-              "displayName" : "(Billed Monthly)",
+              "displayName" : "Billed Monthly",
               "locale" : "en_US"
             }
           ],
@@ -119,7 +119,7 @@
           "localizations" : [
             {
               "description" : "",
-              "displayName" : "(Billed Annually)",
+              "displayName" : "Billed Annually",
               "locale" : "en_US"
             }
           ],

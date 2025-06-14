@@ -10,7 +10,7 @@ import SwiftUI
 struct RootView: View {
     @EnvironmentObject var appViewModel: AppViewModel
     @State private var showSplash = true
-
+    
     var body: some View {
         Group {
             if showSplash {
@@ -23,17 +23,22 @@ struct RootView: View {
                         }
                     }
             } else {
-                if appViewModel.isLoggedIn {
-                    HomeView(onLogout: {
-                        appViewModel.logout()
-                    })
-                } else {
-                    if appViewModel.hasLaunchedBefore {
-                        LoginView()
-                            .environmentObject(appViewModel)
+                if !appViewModel.hasActiveSubscription {
+                    PaymentView()
+                        .environmentObject(appViewModel) 
+                }else{
+                    if appViewModel.isLoggedIn {
+                        HomeView(onLogout: {
+                            appViewModel.logout()
+                        })
                     } else {
-                        RegisterView()
-                            .environmentObject(appViewModel)
+                        if appViewModel.hasLaunchedBefore {
+                            LoginView()
+                                .environmentObject(appViewModel)
+                        } else {
+                            RegisterView()
+                                .environmentObject(appViewModel)
+                        }
                     }
                 }
             }
@@ -44,4 +49,5 @@ struct RootView: View {
 #Preview {
     RootView()
         .environmentObject(AppViewModel())
+        .environmentObject(PaymentViewModel())
 }
