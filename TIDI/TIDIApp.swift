@@ -33,12 +33,22 @@ struct TIDIApp: App {
                         guard let appViewModel else { return }
 
                         for await update in Transaction.updates {
-                            guard case .verified(let transaction) = update else { continue }
+                            
+                            print("Received transaction update: \(update)")
+                            guard case .verified(let transaction) = update else {
+                                print("Unverified transaction")
+                                continue
+                            }
+                            print("Verified transaction: \(transaction.productID)")
                             await transaction.finish()
 
                             // reflect renewal / restore / revoke in the UI
                             await MainActor.run {
-                                _Concurrency.Task { await appViewModel.checkSubscriptionStatus() }
+                                
+                                _Concurrency.Task {
+                                    print("Refreshing subscription status after update")
+                                    await appViewModel.checkSubscriptionStatus()
+                                }
                             }
                         }
                     }

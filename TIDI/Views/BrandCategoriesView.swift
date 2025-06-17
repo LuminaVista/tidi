@@ -28,7 +28,7 @@ struct BrandCategoriesView: View {
                     .padding(.leading, 15)
                     .padding(.top, 10)
                     Spacer()
-                    Text("Environmental Consideration").font(.headline)
+                    Text("Branding").font(.headline)
                         .padding(.trailing, 20)
                     Spacer()
                 }
@@ -66,8 +66,8 @@ struct BrandCategoriesView: View {
                                 
                             }
                             HStack {
-                                NavigationLink(destination: BrandTaskView(businessIdeaID: businessIdeaId)){
-                                    Text("Actions")
+                                NavigationLink(destination: BrandLogo(businessIdeaId: businessIdeaId)){
+                                    Text("Generate AI Logo")
                                         .font(.headline)
                                         .foregroundColor(.black)
                                 }
@@ -77,8 +77,8 @@ struct BrandCategoriesView: View {
                             .background(Color.gray.opacity(0.1))
                             .cornerRadius(10)
                             HStack {
-                                NavigationLink(destination: BrandLogo(businessIdeaId: businessIdeaId)){
-                                    Text("Generate AI Logo")
+                                NavigationLink(destination: BrandTaskView(businessIdeaID: businessIdeaId)){
+                                    Text("Actions")
                                         .font(.headline)
                                         .foregroundColor(.black)
                                 }

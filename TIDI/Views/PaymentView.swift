@@ -10,7 +10,7 @@ import StoreKit
 import _Concurrency
 
 struct PaymentView: View {
-   
+    
     
     @EnvironmentObject private var paymentViewModel : PaymentViewModel
     @EnvironmentObject private var appViewModel:   AppViewModel
@@ -28,8 +28,10 @@ struct PaymentView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 200, height: 100)
-               
+                
                 ForEach(paymentViewModel.products) { product in
+                    let isTrial = product.subscription?.introductoryOffer?.paymentMode == .freeTrial
+                    
                     Button {
                         // add later
                         _Concurrency.Task {
@@ -45,11 +47,20 @@ struct PaymentView: View {
                         }
                     } label: {
                         VStack{
-                            Text("\(product.displayPrice)")
+//                            Text("\(product.displayPrice)")
+//                                .fontWeight(.bold)
+//                                .padding(.bottom,5)
+//                            Text("\(product.displayName)")
+                            Text(isTrial ? "Start Free Trial" : product.displayPrice)
                                 .fontWeight(.bold)
-                                .padding(.bottom,5)
-                            Text("\(product.displayName)")
-                                
+                                .foregroundColor(isTrial ? .black : .white)
+                                .padding(5)
+                            
+                            if isTrial {
+                                Text("7-day free trial, then \(product.displayPrice)/month")
+                                    .fontWeight(.regular)
+                            }
+                            
                         }
                         .padding(15)
                     }
@@ -58,7 +69,7 @@ struct PaymentView: View {
                     .foregroundColor(.black)
                     .cornerRadius(20)
                 }
-                .padding(.horizontal, 60)
+                .padding(.horizontal, 40)
                 
                 Text("Choose the product that fits for you")
                     .fontWeight(.thin)
