@@ -16,13 +16,19 @@ struct BrandAnswersView: View {
     
     var body: some View {
         ZStack {
-            
             ScrollView {
                 VStack(spacing: 20) {
                     if viewModel.isLoadingAnswers {
-                        ProgressView()
-                            .scaleEffect(1.5)
-                            .padding()
+                        VStack {
+                            Spacer()
+                            BouncingDots()
+                            Text("Analysing & Fetching Response...")
+                                .font(.subheadline)
+                                .foregroundColor(.black)
+                                .padding(20)
+                            Spacer()
+                        }
+                        .frame(maxHeight: .infinity)
                     } else if let errorMessage = viewModel.answersErrorMessage {
                         ErrorView(message: errorMessage, retryAction: {
                             viewModel.loadAIAnswers(businessIdeaId: businessIdeaId, brandCatId: brandCatId)
@@ -89,6 +95,27 @@ struct AnswerCardViewBrand: View {
         .background(Color(hex: "#F8F9FB"))
         .cornerRadius(12)
         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+    }
+}
+
+struct BouncingDots: View {
+    @State private var animate = false
+    
+    var body: some View {
+        HStack(spacing: 8) {
+            ForEach(0..<3) { i in
+                Circle()
+                    .frame(width: 10, height: 10)
+                    .offset(y: animate ? -5 : 5)
+                    .animation(
+                        Animation.easeInOut(duration: 0.6)
+                            .repeatForever()
+                            .delay(Double(i) * 0.2),
+                        value: animate
+                    )
+            }
+        }
+        .onAppear { animate = true }
     }
 }
 

@@ -19,9 +19,16 @@ struct ConceptAnswersView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     if viewModel.isLoadingAnswers {
-                        ProgressView()
-                            .scaleEffect(1.5)
-                            .padding()
+                        VStack {
+                            Spacer()
+                            BouncingDots()
+                            Text("Analysing & Fetching Response...")
+                                .font(.subheadline)
+                                .foregroundColor(.black)
+                                .padding(20)
+                            Spacer()
+                        }
+                        .frame(maxHeight: .infinity)
                     } else if let errorMessage = viewModel.answersErrorMessage {
                         ErrorView(message: errorMessage, retryAction: {
                             viewModel.loadAIAnswers(businessIdeaId: businessIdeaId, conceptCatId: conceptCatId)
