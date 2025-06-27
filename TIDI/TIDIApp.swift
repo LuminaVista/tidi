@@ -43,8 +43,7 @@ struct TIDIApp: App {
                             await transaction.finish()
 
                             // reflect renewal / restore / revoke in the UI
-                            await MainActor.run {
-                                
+                            await MainActor.run{
                                 _Concurrency.Task {
                                     print("Refreshing subscription status after update")
                                     await appViewModel.checkSubscriptionStatus()

@@ -13,7 +13,7 @@ import StoreKit
 class PaymentViewModel: ObservableObject{
     
     
-    let productIds = ["tidi.monthly15", "tidi.yearly120"]
+    let productIds = ["tidi.monthly15v2", "tidi.yearly120v2"]
     
     @Published
     private(set) var products: [Product] = []
@@ -64,9 +64,6 @@ class PaymentViewModel: ObservableObject{
             }
         }
     }
-    
-    
-    
 }
 
 

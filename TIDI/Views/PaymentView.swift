@@ -71,7 +71,7 @@ struct PaymentView: View {
                 }
                 .padding(.horizontal, 40)
                 
-                Text("Choose the product that fits for you")
+                Text("Choose the purchase option that fits for you.")
                     .fontWeight(.thin)
                 
                 Spacer()

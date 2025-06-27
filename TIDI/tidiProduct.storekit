@@ -99,7 +99,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "tidi.monthly15",
+          "productID" : "tidi.monthly15v2",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Monthly Access",
           "subscriptionGroupID" : "79B82338",
@@ -131,7 +131,7 @@
               "locale" : "en_US"
             }
           ],
-          "productID" : "tidi.yearly120",
+          "productID" : "tidi.yearly120v2",
           "recurringSubscriptionPeriod" : "P1Y",
           "referenceName" : "Yearly Access",
           "subscriptionGroupID" : "79B82338",
