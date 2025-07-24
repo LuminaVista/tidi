@@ -73,6 +73,7 @@ struct ConceptAnswersView: View {
     }
 }
 
+
 struct AnswerCardView: View {
     let answer: ConceptAnswer
 
@@ -178,5 +179,5 @@ struct ErrorView: View {
 }
 
 #Preview {
-    ConceptAnswersView(businessIdeaId: 97, conceptCatId: 1)
+    ConceptAnswersView(businessIdeaId: 104, conceptCatId: 1)
 }

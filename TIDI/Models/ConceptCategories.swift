@@ -11,7 +11,7 @@ struct ConceptCategory: Identifiable, Codable {
     let id: Int
     let conceptId: Int
     let name: String
-
+    
     enum CodingKeys: String, CodingKey {
         case id = "concept_cat_id"
         case conceptId = "concept_id"
@@ -23,7 +23,7 @@ struct ConceptCategoryResponse: Codable {
     let progress: Double?
     let businessIdeaId: Int?
     let categories: [ConceptCategory]
-
+    
     enum CodingKeys: String, CodingKey {
         case progress = "progress"
         case businessIdeaId = "business_idea_id"
@@ -50,11 +50,23 @@ struct ConceptAnswer: Codable, Identifiable {
     var id: Int { concept_question_id }
     
     // Parse bullet points from the answer string
+    // Parse bullet points from the answer string
     var bulletPoints: [String] {
-        answer.split(separator: "\n")
+        let lines = answer.split(separator: "\n")
             .map { String($0) }
-            .filter { $0.hasPrefix("- ") }
+            .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+        
+        let bulletPointLines = lines.filter { $0.hasPrefix("- ") }
             .map { String($0.dropFirst(2)) }
+        
+        // If bullet points exist, return them
+        if !bulletPointLines.isEmpty {
+            return bulletPointLines
+        }
+        
+        // If no bullet points found, return the entire answer as a single item
+        let trimmedAnswer = answer.trimmingCharacters(in: .whitespaces)
+        return trimmedAnswer.isEmpty ? [] : [trimmedAnswer]
     }
 }
 
@@ -115,7 +127,7 @@ struct UserGenConceptTask: Identifiable, Codable {
     let businessIdeaID: Int
     let taskDescription: String
     let taskStatus: Int // 0 = Incomplete, 1 = Complete
-
+    
     enum CodingKeys: String, CodingKey {
         case id
         case conceptID = "concept_id"
