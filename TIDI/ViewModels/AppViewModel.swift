@@ -20,7 +20,6 @@ class AppViewModel: ObservableObject {
         } else {
             self.isLoggedIn = false
         }
-
         // Check first-time launch
         let launched = UserDefaults.standard.bool(forKey: "hasLaunchedBefore")
         self.hasLaunchedBefore = launched

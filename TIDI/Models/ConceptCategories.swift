@@ -45,6 +45,7 @@ struct ConceptAnswer: Codable, Identifiable {
     let concept_question_id: Int
     let concept_id: Int
     let concept_cat_id: Int
+    let concept_answer_id: Int
     
     var id: Int { concept_question_id }
     

@@ -15,6 +15,8 @@ struct PaymentView: View {
     @EnvironmentObject private var paymentViewModel : PaymentViewModel
     @EnvironmentObject private var appViewModel:   AppViewModel
     
+    
+    /* A lot of this code can be reused but there are lot of space for improvement.but the */
     var onComplete: (() -> Void)? = nil
     
     var body: some View {
