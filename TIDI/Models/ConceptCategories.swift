@@ -41,7 +41,7 @@ struct ConceptAnswerResponse: Codable {
 
 struct ConceptAnswer: Codable, Identifiable {
     let question: String
-    let answer: String
+    var answer: String
     let concept_question_id: Int
     let concept_id: Int
     let concept_cat_id: Int
@@ -140,4 +140,10 @@ struct UserGenConceptTask: Identifiable, Codable {
 struct UserGenConceptTaskResponse: Codable {
     let message: String
     let task: UserGenConceptTask
+}
+
+struct ConceptAnswerEditResponse: Codable {
+    let concept_answer_id: Int
+    let message: String
+    let approved_answer: String
 }

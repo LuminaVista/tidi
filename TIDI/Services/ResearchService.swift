@@ -231,4 +231,26 @@ struct ResearchService{
         }.resume()
     }
     
+    // Edit & Approve AI Answer
+    func editAndApproveAnswer(researchAnswerId: Int, newContent: String, completion: @escaping (Result<ResearchAnswerEditResponse, Error>) -> Void) {
+        guard let url = URL(string: "\(Constants.baseURL)/research/ai/answer/edit/\(researchAnswerId)") else {
+            completion(.failure(NSError(domain:"", code:-1, userInfo:[NSLocalizedDescriptionKey:"Invalid URL"]))); return
+        }
+        var request = URLRequest(url: url); request.httpMethod = "PUT"
+        request.setValue("application/json", forHTTPHeaderField:"Content-Type")
+        if let token = KeychainHelper.shared.getToken(forKey:"userAuthToken") {
+            request.setValue("Bearer \(token)", forHTTPHeaderField:"Authorization")
+        }
+        request.httpBody = try? JSONSerialization.data(withJSONObject:["answer_content":newContent])
+        URLSession.shared.dataTask(with: request) { data, _, error in
+            if let e = error { completion(.failure(e)); return }
+            guard let d = data else {
+                completion(.failure(NSError(domain:"", code:-2, userInfo:[NSLocalizedDescriptionKey:"No data"]))); return
+            }
+            do { let resp = try JSONDecoder().decode(ResearchAnswerEditResponse.self, from: d)
+                completion(.success(resp)) }
+            catch { completion(.failure(error)) }
+        }.resume()
+    }
+    
 }

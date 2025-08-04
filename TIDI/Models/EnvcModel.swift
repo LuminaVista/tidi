@@ -41,19 +41,31 @@ struct EnvcAnswerResponse: Codable {
 
 struct EnvcAnswer: Codable, Identifiable {
     let question: String
-    let answer: String
+    var answer: String
     let envc_question_id: Int
     let envc_id: Int
     let envc_cat_id: Int
+    let envc_answer_id: Int
     
     var id: Int { envc_question_id }
     
     // Parse bullet points from the answer string
     var bulletPoints: [String] {
-        answer.split(separator: "\n")
+        let lines = answer.split(separator: "\n")
             .map { String($0) }
-            .filter { $0.hasPrefix("- ") }
+            .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+        
+        let bulletPointLines = lines.filter { $0.hasPrefix("- ") }
             .map { String($0.dropFirst(2)) }
+        
+        // If bullet points exist, return them
+        if !bulletPointLines.isEmpty {
+            return bulletPointLines
+        }
+        
+        // If no bullet points found, return the entire answer as a single item
+        let trimmedAnswer = answer.trimmingCharacters(in: .whitespaces)
+        return trimmedAnswer.isEmpty ? [] : [trimmedAnswer]
     }
 }
 
@@ -130,3 +142,8 @@ struct UserGenEnvcTaskResponse: Codable {
     let task: UserGenEnvcTask
 }
 
+struct EnvcAnswerEditResponse: Codable {
+    let envc_answer_id: Int
+    let message: String
+    let approved_answer: String
+}

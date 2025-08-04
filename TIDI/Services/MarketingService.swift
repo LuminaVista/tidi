@@ -133,7 +133,7 @@ struct MarketingService{
             }
         }.resume()
     }
-
+    
     // Edit Task
     // Mark task as complete
     static func completeTask(businessIdeadID: Int, taskID: Int, completion: @escaping (Result<Int, Error>) -> Void) {
@@ -228,5 +228,39 @@ struct MarketingService{
             }
         }.resume()
     }
-
+    
+    
+    func editAndApproveAnswer(
+        marketingAnswerId: Int,
+        newContent: String,
+        completion: @escaping (Result<MarketingAnswerEditResponse, Error>) -> Void
+    ) {
+        guard let url = URL(string: "\(Constants.baseURL)/marketing/ai/answer/edit/\(marketingAnswerId)") else {
+            completion(.failure(NSError(domain:"", code:-1, userInfo:[NSLocalizedDescriptionKey:"Invalid URL"])))
+            return
+        }
+        var req = URLRequest(url: url)
+        req.httpMethod = "PUT"
+        req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if let token = KeychainHelper.shared.getToken(forKey:"userAuthToken") {
+            req.setValue("Bearer \(token)", forHTTPHeaderField:"Authorization")
+        }
+        req.httpBody = try? JSONSerialization.data(
+            withJSONObject:["answer_content": newContent]
+        )
+        URLSession.shared.dataTask(with: req) { data, _, error in
+            if let e = error { completion(.failure(e)); return }
+            guard let d = data else {
+                completion(.failure(NSError(domain:"", code:-2, userInfo:[NSLocalizedDescriptionKey:"No data"])))
+                return
+            }
+            do {
+                let resp = try JSONDecoder().decode(MarketingAnswerEditResponse.self, from: d)
+                completion(.success(resp))
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
+    }
+    
 }

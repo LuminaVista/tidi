@@ -41,19 +41,31 @@ struct BudgetAnswerResponse: Codable {
 
 struct BudgetAnswer: Codable, Identifiable {
     let question: String
-    let answer: String
+    var answer: String
     let budget_question_id: Int
     let budget_id: Int
     let budget_cat_id: Int
+    let budget_answer_id: Int
     
     var id: Int { budget_question_id }
     
     // Parse bullet points from the answer string
     var bulletPoints: [String] {
-        answer.split(separator: "\n")
+        let lines = answer.split(separator: "\n")
             .map { String($0) }
-            .filter { $0.hasPrefix("- ") }
+            .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+        
+        let bulletPointLines = lines.filter { $0.hasPrefix("- ") }
             .map { String($0.dropFirst(2)) }
+        
+        // If bullet points exist, return them
+        if !bulletPointLines.isEmpty {
+            return bulletPointLines
+        }
+        
+        // If no bullet points found, return the entire answer as a single item
+        let trimmedAnswer = answer.trimmingCharacters(in: .whitespaces)
+        return trimmedAnswer.isEmpty ? [] : [trimmedAnswer]
     }
 }
 
@@ -129,4 +141,11 @@ struct UserGenBudgetTask: Identifiable, Codable {
 struct UserGenBudgetTaskResponse: Codable {
     let message: String
     let task: UserGenBudgetTask
+}
+
+// Response model for edit/approve
+struct BudgetAnswerEditResponse: Codable {
+    let budget_answer_id: Int
+    let message: String
+    let approved_answer: String
 }

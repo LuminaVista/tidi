@@ -42,19 +42,31 @@ struct BrandAnswerResponse: Codable {
 
 struct BrandAnswer: Codable, Identifiable {
     let question: String
-    let answer: String
+    var answer: String
     let brand_question_id: Int
     let brand_id: Int
     let brand_cat_id: Int
+    let brand_answer_id: Int
     
     var id: Int { brand_question_id }
     
     // Parse bullet points from the answer string
     var bulletPoints: [String] {
-        answer.split(separator: "\n")
+        let lines = answer.split(separator: "\n")
             .map { String($0) }
-            .filter { $0.hasPrefix("- ") }
+            .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+        
+        let bulletPointLines = lines.filter { $0.hasPrefix("- ") }
             .map { String($0.dropFirst(2)) }
+        
+        // If bullet points exist, return them
+        if !bulletPointLines.isEmpty {
+            return bulletPointLines
+        }
+        
+        // If no bullet points found, return the entire answer as a single item
+        let trimmedAnswer = answer.trimmingCharacters(in: .whitespaces)
+        return trimmedAnswer.isEmpty ? [] : [trimmedAnswer]
     }
 }
 
@@ -143,4 +155,10 @@ struct BrandLogoResponse: Codable {
         case businessIdeaId = "business_idea_id"
         case imageUrl = "image_url"
     }
+}
+
+struct BrandAnswerEditResponse: Codable {
+    let brand_answer_id: Int
+    let message: String
+    let approved_answer: String
 }

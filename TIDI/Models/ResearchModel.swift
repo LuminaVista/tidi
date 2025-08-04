@@ -42,19 +42,32 @@ struct ResearchAnswerResponse: Codable {
 
 struct ResearchAnswer: Codable, Identifiable {
     let question: String
-    let answer: String
+    var answer: String
     let research_question_id: Int
     let research_id: Int
     let research_cat_id: Int
+    let research_answer_id: Int
     
     var id: Int { research_question_id }
     
     // Parse bullet points from the answer string
+    // Parse bullet points from the answer string
     var bulletPoints: [String] {
-        answer.split(separator: "\n")
+        let lines = answer.split(separator: "\n")
             .map { String($0) }
-            .filter { $0.hasPrefix("- ") }
+            .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+        
+        let bulletPointLines = lines.filter { $0.hasPrefix("- ") }
             .map { String($0.dropFirst(2)) }
+        
+        // If bullet points exist, return them
+        if !bulletPointLines.isEmpty {
+            return bulletPointLines
+        }
+        
+        // If no bullet points found, return the entire answer as a single item
+        let trimmedAnswer = answer.trimmingCharacters(in: .whitespaces)
+        return trimmedAnswer.isEmpty ? [] : [trimmedAnswer]
     }
 }
 
@@ -131,4 +144,10 @@ struct UserGenResearchTask: Identifiable, Codable {
 struct UserGenResearchTaskResponse: Codable {
     let message: String
     let task: UserGenResearchTask
+}
+
+struct ResearchAnswerEditResponse: Codable {
+    let research_answer_id: Int
+    let message: String
+    let approved_answer: String
 }

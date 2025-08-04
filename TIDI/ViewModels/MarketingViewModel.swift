@@ -143,9 +143,31 @@ class MarketingViewModel: ObservableObject{
             }
         }
     }
-
     
     
+    /// Edit & approve AI answer
+    func editAnswer(_ answer: MarketingAnswer, newContent: String) {
+        isLoadingAnswers = true
+        answersErrorMessage = nil
+        MarketingService.shared.editAndApproveAnswer(
+            marketingAnswerId: answer.marketing_answer_id,
+            newContent: newContent
+        ) { result in
+            DispatchQueue.main.async {
+                self.isLoadingAnswers = false
+                switch result {
+                case .success(let resp):
+                    if let idx = self.answers.firstIndex(
+                        where: { $0.marketing_answer_id == resp.marketing_answer_id }
+                    ) {
+                        self.answers[idx].answer = resp.approved_answer
+                    }
+                case .failure(let e):
+                    self.answersErrorMessage = e.localizedDescription
+                }
+            }
+        }
+    }
     
     
 }

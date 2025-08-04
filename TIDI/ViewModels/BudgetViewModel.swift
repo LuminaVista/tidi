@@ -59,7 +59,7 @@ class BudgetViewModel: ObservableObject {
             }
         }
     }
-
+    
     // TASK RELATED
     @Published var tasks: [BudgetTask] = []
     @Published var isLoadingTask = false
@@ -82,7 +82,7 @@ class BudgetViewModel: ObservableObject {
             }
         }
     }
-
+    
     
     // Edit task
     // Mark task as complete
@@ -103,7 +103,7 @@ class BudgetViewModel: ObservableObject {
             }
         }
     }
-
+    
     
     // User gen budget task
     @Published var userGenTask: [UserGenBudgetTask] = []
@@ -143,6 +143,28 @@ class BudgetViewModel: ObservableObject {
         }
     }
     
-    
+    /// Edit & approve AI answer
+    func editAnswer(_ answer: BudgetAnswer, newContent: String) {
+        isLoadingAnswers = true
+        answersErrorMessage = nil
+        BudgetService.shared.editAndApproveAnswer(
+            budgetAnswerId: answer.budget_answer_id,
+            newContent: newContent
+        ) { result in
+            DispatchQueue.main.async {
+                self.isLoadingAnswers = false
+                switch result {
+                case .success(let resp):
+                    if let idx = self.answers.firstIndex(
+                        where: { $0.budget_answer_id == resp.budget_answer_id }
+                    ) {
+                        self.answers[idx].answer = resp.approved_answer
+                    }
+                case .failure(let e):
+                    self.answersErrorMessage = e.localizedDescription
+                }
+            }
+        }
+    }
     
 }

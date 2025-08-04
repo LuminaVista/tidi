@@ -59,7 +59,7 @@ class EnvcViewModel: ObservableObject {
             }
         }
     }
-
+    
     
     // TASK RELATED
     @Published var tasks: [EnvcTask] = []
@@ -145,5 +145,27 @@ class EnvcViewModel: ObservableObject {
             }
         }
     }
-
+    
+    
+    /// Edit & approve AI answer
+    func editAnswer(_ answer: EnvcAnswer, newContent: String) {
+        isLoadingAnswers = true
+        answersErrorMessage = nil
+        EnvcService.shared.editAndApproveAnswer(
+            envcAnswerId: answer.envc_answer_id,
+            newContent: newContent
+        ) { result in
+            DispatchQueue.main.async {
+                self.isLoadingAnswers = false
+                switch result {
+                case .success(let resp):
+                    if let idx = self.answers.firstIndex(where: { $0.envc_answer_id == resp.envc_answer_id }) {
+                        self.answers[idx].answer = resp.approved_answer
+                    }
+                case .failure(let e):
+                    self.answersErrorMessage = e.localizedDescription
+                }
+            }
+        }
+    }
 }

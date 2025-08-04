@@ -27,8 +27,6 @@ class ConceptViewModel: ObservableObject {
     
     
     
-    
-    
     func loadConceptCategories(businessIdeaId: Int) {
         isLoading = true
         errorMessage = nil
@@ -144,4 +142,29 @@ class ConceptViewModel: ObservableObject {
             }
         }
     }
+    
+    
+    // New: Edit & approve AI answer
+    func editAnswer(_ answer: ConceptAnswer, newContent: String) {
+        isLoadingAnswers = true; answersErrorMessage = nil
+        ConceptService.shared.editAndApproveAnswer(
+            conceptAnswerId: answer.concept_answer_id,
+            newContent: newContent) { result in
+                DispatchQueue.main.async {
+                    self.isLoadingAnswers = false
+                    switch result {
+                    case .success(let resp):
+                        if let idx = self.answers.firstIndex(
+                            where: { $0.concept_answer_id == resp.concept_answer_id }) {
+                            self.answers[idx].answer = resp.approved_answer
+                        }
+                    case .failure(let e):
+                        self.answersErrorMessage = e.localizedDescription
+                    }
+                }
+            }
+    }
+    
+    
+    
 }

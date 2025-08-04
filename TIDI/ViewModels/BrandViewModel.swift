@@ -150,11 +150,11 @@ class BrandViewModel: ObservableObject {
     @Published var logoImageUrl: String?
     @Published var logoLoading: Bool = false
     @Published var logoError: String?
-
+    
     func generateLogo(businessIdeaId: Int, tagline: String, palette: [String]) {
         logoLoading = true
         logoError = nil
-
+        
         BrandService.shared.generateBrandLogo(businessIdeaId: businessIdeaId, tagline: tagline, palette: palette) { result in
             DispatchQueue.main.async {
                 self.logoLoading = false
@@ -168,6 +168,29 @@ class BrandViewModel: ObservableObject {
         }
     }
     
+    /// Edit & approve AI answer
+    func editAnswer(_ answer: BrandAnswer, newContent: String) {
+        isLoadingAnswers = true
+        answersErrorMessage = nil
+        BrandService.shared.editAndApproveAnswer(
+            brandAnswerId: answer.brand_answer_id,
+            newContent: newContent
+        ) { result in
+            DispatchQueue.main.async {
+                self.isLoadingAnswers = false
+                switch result {
+                case .success(let resp):
+                    if let idx = self.answers.firstIndex(
+                        where: { $0.brand_answer_id == resp.brand_answer_id }
+                    ) {
+                        self.answers[idx].answer = resp.approved_answer
+                    }
+                case .failure(let e):
+                    self.answersErrorMessage = e.localizedDescription
+                }
+            }
+        }
+    }
     
     
     

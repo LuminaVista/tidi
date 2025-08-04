@@ -12,10 +12,11 @@ struct ConceptAnswersView: View {
     @StateObject private var viewModel = ConceptViewModel()
     let businessIdeaId: Int
     let conceptCatId: Int
-
+    
+    
     var body: some View {
         ZStack {
-
+            
             ScrollView {
                 VStack(spacing: 20) {
                     if viewModel.isLoadingAnswers {
@@ -56,9 +57,9 @@ struct ConceptAnswersView: View {
                             Spacer()
                         }
                         .padding(.top, 30)
-
+                        
                         ForEach(viewModel.answers) { answer in
-                            AnswerCardView(answer: answer)
+                            AnswerCardView(answer: answer, viewModel: viewModel)
                         }
                     }
                 }
@@ -76,31 +77,39 @@ struct ConceptAnswersView: View {
 
 struct AnswerCardView: View {
     let answer: ConceptAnswer
-
+    @ObservedObject var viewModel: ConceptViewModel
+    @State private var isEditing = false
+    @State private var editedContent = ""
+    
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text(String(answer.concept_answer_id))
             Text(answer.question)
                 .font(.headline)
                 .foregroundColor(.primary)
-                .padding(.bottom, 4)
-
-            ForEach(answer.bulletPoints, id: \.self) { point in
-                HStack(alignment: .top, spacing: 12) {
-                    Image(systemName: "circle.fill")
-                        .font(.system(size: 6))
-                        .foregroundColor(.black)
-                        .padding(.top, 6)
-
-                    Text(point)
-                        .font(.body)
-                        .foregroundColor(.secondary)
+            
+            if isEditing {
+                TextEditor(text: $editedContent)
+                    .frame(minHeight: 100)
+                    .overlay(RoundedRectangle(cornerRadius: 8)
+                        .stroke(Color.gray.opacity(0.5)))
+            } else {
+                ForEach(answer.bulletPoints, id: \.self) { point in
+                    HStack(alignment: .top, spacing: 12) {
+                        Image(systemName: "circle.fill")
+                            .font(.system(size: 6))
+                            .padding(.top, 6)
+                        Text(point)
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                    }
                 }
             }
+            
             HStack(spacing: 16) {
-                Button(action: {
-                    //                                onEdit?()
-                }) {
+                Button {
+                    editedContent = answer.answer
+                    isEditing.toggle()
+                } label: {
                     HStack {
                         Image(systemName: "pencil")
                         Text("Edit")
@@ -113,10 +122,12 @@ struct AnswerCardView: View {
                     .background(Color(hex: "#2C2A2A"))
                     .cornerRadius(8)
                 }
-
-                Button(action: {
-                    //                                onApprove?()
-                }) {
+                
+                Button {
+                    let toSubmit = isEditing ? editedContent : answer.answer
+                    viewModel.editAnswer(answer, newContent: toSubmit)
+                    isEditing = false
+                } label: {
                     HStack {
                         Image(systemName: "checkmark")
                         Text("Approve")
@@ -132,7 +143,6 @@ struct AnswerCardView: View {
             }
             .frame(maxWidth: .infinity)
             .padding(.top, 8)
-
         }
         .padding(20)
         .background(Color(hex: "#F8F9FB"))
@@ -144,22 +154,22 @@ struct AnswerCardView: View {
 struct ErrorView: View {
     let message: String
     let retryAction: () -> Void
-
+    
     var body: some View {
         VStack(spacing: 16) {
             Image(systemName: "exclamationmark.triangle")
                 .font(.system(size: 40))
                 .foregroundColor(.orange)
-
+            
             Text("Error")
                 .font(.title2)
                 .fontWeight(.bold)
-
+            
             Text(message)
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .foregroundColor(.secondary)
-
+            
             Button(action: retryAction) {
                 Text("Try Again")
                     .fontWeight(.semibold)

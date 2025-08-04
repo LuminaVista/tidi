@@ -142,6 +142,24 @@ class ResearchViewModel: ObservableObject {
             }
         }
     }
+    
+    
+    // Edit & Approve AI answer
+        func editAnswer(_ answer: ResearchAnswer, newContent: String) {
+            isLoadingAnswers = true; answersErrorMessage = nil
+            ResearchService.shared.editAndApproveAnswer(researchAnswerId: answer.research_answer_id, newContent: newContent) { result in
+                DispatchQueue.main.async {
+                    self.isLoadingAnswers = false
+                    switch result {
+                    case .success(let resp):
+                        if let idx = self.answers.firstIndex(where: { $0.research_answer_id == resp.research_answer_id }) {
+                            self.answers[idx].answer = resp.approved_answer
+                        }
+                    case .failure(let e): self.answersErrorMessage = e.localizedDescription
+                    }
+                }
+            }
+        }
 
     
 }

@@ -41,19 +41,31 @@ struct MarketingAnswerResponse: Codable {
 
 struct MarketingAnswer: Codable, Identifiable {
     let question: String
-    let answer: String
+    var answer: String
     let marketing_question_id: Int
     let marketing_id: Int
     let marketing_cat_id: Int
+    let marketing_answer_id: Int
     
     var id: Int { marketing_question_id }
     
     // Parse bullet points from the answer string
     var bulletPoints: [String] {
-        answer.split(separator: "\n")
+        let lines = answer.split(separator: "\n")
             .map { String($0) }
-            .filter { $0.hasPrefix("- ") }
+            .filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
+        
+        let bulletPointLines = lines.filter { $0.hasPrefix("- ") }
             .map { String($0.dropFirst(2)) }
+        
+        // If bullet points exist, return them
+        if !bulletPointLines.isEmpty {
+            return bulletPointLines
+        }
+        
+        // If no bullet points found, return the entire answer as a single item
+        let trimmedAnswer = answer.trimmingCharacters(in: .whitespaces)
+        return trimmedAnswer.isEmpty ? [] : [trimmedAnswer]
     }
 }
 
@@ -128,4 +140,10 @@ struct UserGenMarketingTask: Identifiable, Codable {
 struct UserGenMarketingTaskResponse: Codable {
     let message: String
     let task: UserGenMarketingTask
+}
+
+struct MarketingAnswerEditResponse: Codable {
+    let marketing_answer_id: Int
+    let message: String
+    let approved_answer: String
 }
