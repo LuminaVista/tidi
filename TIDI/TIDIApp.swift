@@ -28,10 +28,10 @@ struct TIDIApp: App {
                 .preferredColorScheme(.light)
                 .task {
                     await appViewModel.checkSubscriptionStatus()
-
+                    
                     _Concurrency.Task.detached(priority: .background) { [weak appViewModel] in
                         guard let appViewModel else { return }
-
+                        
                         for await update in Transaction.updates {
                             
                             print("Received transaction update: \(update)")
@@ -41,14 +41,11 @@ struct TIDIApp: App {
                             }
                             print("Verified transaction: \(transaction.productID)")
                             await transaction.finish()
-
+                            
                             // reflect renewal / restore / revoke in the UI
-                            await MainActor.run{
-                                _Concurrency.Task {
-                                    print("Refreshing subscription status after update")
-                                    await appViewModel.checkSubscriptionStatus()
-                                }
-                            }
+                            print("Refreshing subscription status after update")
+                            await appViewModel.checkSubscriptionStatus()
+                            
                         }
                     }
                 }
