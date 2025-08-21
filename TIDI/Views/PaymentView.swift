@@ -61,15 +61,13 @@ struct PaymentOptionRow: View {
         } label: {
             VStack {
                 // Title line
-                Text(isTrial ? "Start Free Trial" : priceWithUnit)
-                    .fontWeight(.bold)
-                    .foregroundColor(isTrial ? .black : .white)
-                    .padding(5)
+                
 
                 // Subtitle for trial
                 if isTrial {
-                    Text("7-day free trial, then \(priceWithUnit)")
-                        .fontWeight(.regular)
+                    Text("\(priceWithUnit) with 7-day free trial")
+                        .fontWeight(.bold)
+                        .foregroundColor(Color.black)
                 }
             }
             .padding(15)
