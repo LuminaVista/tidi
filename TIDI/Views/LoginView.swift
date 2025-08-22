@@ -85,10 +85,12 @@ struct LoginView: View {
             }
             // ✅ MODIFIED: Uses global logout and resets state
             .navigationDestination(isPresented: $navigateToHome) {
-                HomeView(onLogout: {
-                    appViewModel.logout() // ✅ NEW: Clears Keychain + login state
-                    navigateToHome = false
-                })
+                HomeView(
+                    onLogout: {
+                        appViewModel.logout() // ✅ NEW: Clears Keychain + login state
+                        navigateToHome = false
+                    }
+                )
             }
         }
         .navigationBarBackButtonHidden(true)

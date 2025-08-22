@@ -26,14 +26,22 @@ struct HomeView: View {
                     // Logo at the Top
                     VStack {
                         HStack{
+                            // settings button
+                            NavigationLink(destination: SettingsView()) {
+                                Image(systemName: "gearshape")
+                                    .resizable()
+                                    .frame(width: 24, height: 24)
+                                    .padding(10)
+                                    .padding(.top, 40)
+                            }
+                            .buttonStyle(PlainButtonStyle())
                             Spacer()
                             Image("app_logo") // Ensure it's in Assets
                                 .resizable()
                                 .scaledToFit()
                                 .frame(height: 40)
                                 .padding(.top, 20) // Adjust based on safe area
-                                .padding(.bottom, 10) // Adjust based on safe area
-                                .padding(.leading, 50)
+                                .padding(.bottom, 10) // Adjust based on safe area\
                             Spacer()
                             // Logout Button
                             Button(action: {
@@ -183,5 +191,7 @@ struct CircularProgressView: View {
 }
 
 #Preview {
-    HomeView(onLogout: {})
+    HomeView(
+        onLogout: {}
+    )
 }
