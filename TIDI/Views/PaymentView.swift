@@ -12,15 +12,15 @@ import _Concurrency
 struct PaymentOptionRow: View {
     let product: Product
     var onComplete: (() -> Void)?
-
+    
     @EnvironmentObject private var paymentViewModel: PaymentViewModel
     @EnvironmentObject private var appViewModel:   AppViewModel
-
+    
     // Is this product offering a free‐trial introductory offer?
     private var isTrial: Bool {
         product.subscription?.introductoryOffer?.paymentMode == .freeTrial
     }
-
+    
     // Turn StoreKit's subscriptionPeriod into "month"/"year"
     private var unitString: String {
         guard let period = product.subscription?.subscriptionPeriod else {
@@ -39,12 +39,38 @@ struct PaymentOptionRow: View {
             return "month"
         }
     }
-
+    
     // Combined price + unit, e.g. "$14.99/month"
     private var priceWithUnit: String {
         "\(product.displayPrice)/\(unitString)"
     }
+    
+    var monthlyProduct: Product? {
+        paymentViewModel.products.first {
+            $0.subscription?.subscriptionPeriod.unit == .month
+        }
+    }
 
+    var yearlyProduct: Product? {
+        paymentViewModel.products.first {
+            $0.subscription?.subscriptionPeriod.unit == .year
+        }
+    }
+    
+    var calculatedSavings: String? {
+        guard let monthly = monthlyProduct,
+              let yearly = yearlyProduct else {
+            return nil
+        }
+
+        let monthlyPrice = Double(monthly.displayPrice.replacingOccurrences(of: "[^0-9.]", with: "", options: .regularExpression)) ?? 0
+        let yearlyPrice = Double(yearly.displayPrice.replacingOccurrences(of: "[^0-9.]", with: "", options: .regularExpression)) ?? 0
+
+        let savings = (12 * monthlyPrice) - yearlyPrice
+        return String(format: "$%.2f", savings)
+    }
+    
+    
     var body: some View {
         Button {
             _Concurrency.Task {
@@ -60,20 +86,98 @@ struct PaymentOptionRow: View {
             }
         } label: {
             VStack {
-                // Title line
-                
-
                 // Subtitle for trial
                 if isTrial {
-                    Text("\(priceWithUnit) with 7-day free trial")
+                    Text("\(priceWithUnit)")
                         .fontWeight(.bold)
                         .foregroundColor(Color.black)
+                        .font(.system(size: 22))
+                    
+                    Divider()
+                        .frame(height: 1) // Thickness
+                        .background(Color.black.opacity(0.2)) // Color
+                    
+                    
+                    
+                    
+                    VStack(alignment: .leading, spacing: 10){
+                        HStack(alignment: .top, spacing: 5) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.black)
+                                .font(.system(size: 15))
+                            Text("7 day free trial")
+                                .foregroundStyle(Color.black)
+                                .font(.system(size: 15))
+                        }
+                        
+                        
+                        
+                        if unitString == "year", let savingsText = calculatedSavings {
+                            HStack(alignment: .top, spacing: 5) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .foregroundColor(.black)
+                                    .font(.system(size: 15))
+
+                                (
+                                    Text("Save ")
+                                        .foregroundColor(.black)
+                                        .font(.system(size: 15)) +
+                                    Text(savingsText)
+                                        .bold()
+                                        .foregroundColor(.black)
+                                        .font(.system(size: 15)) +
+                                    Text(" per year")
+                                        .foregroundColor(.black)
+                                        .font(.system(size: 15))
+                                )
+                            }
+                        }
+                        
+                        HStack(alignment: .top, spacing: 5) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.black)
+                                .font(.system(size: 15))
+                            Text("Unlimited business concept creation")
+                                .foregroundStyle(Color.black)
+                                .font(.system(size: 15))
+                        }
+                        HStack(alignment: .top, spacing: 5) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.black)
+                                .font(.system(size: 15))
+                            Text("Unlimited AI-feedback generation")
+                                .foregroundStyle(Color.black)
+                                .font(.system(size: 15))
+                        }
+                        HStack(alignment: .top, spacing: 5) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.black)
+                                .font(.system(size: 15))
+                            Text("Unlimited AI-generated task creation")
+                                .foregroundStyle(Color.black)
+                                .font(.system(size: 15))
+                        }
+                        HStack(alignment: .top, spacing: 5) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundColor(.black)
+                                .font(.system(size: 15))
+                            Text("Full-Access to all the features")
+                                .foregroundStyle(Color.black)
+                                .font(.system(size: 15))
+                        }
+                    }
+                    .padding(.top,10)
+                    
+                    
                 }
+                
             }
             .padding(15)
             .frame(maxWidth: .infinity, minHeight: 50)
             .background(Color.white)
             .cornerRadius(20)
+            
+            
         }
     }
 }
@@ -84,23 +188,23 @@ struct PaymentOptionRow: View {
 struct PaymentView: View {
     @EnvironmentObject private var paymentViewModel: PaymentViewModel
     @EnvironmentObject private var appViewModel:     AppViewModel
-
+    
     /// Called when *any* purchase completes successfully
     var onComplete: (() -> Void)? = nil
-
+    
     var body: some View {
         ZStack {
             Color(hex: "#DDD4C8")
                 .ignoresSafeArea()
-
+            
             VStack(spacing: 20) {
                 Spacer()
-
+                
                 Image("app_logo")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 200, height: 100)
-
+                
                 // Iterate your [Product] by id:
                 ForEach(paymentViewModel.products, id: \.id) { product in
                     PaymentOptionRow(product: product, onComplete: onComplete)
@@ -108,10 +212,10 @@ struct PaymentView: View {
                         .environmentObject(appViewModel)
                 }
                 .padding(.horizontal, 40)
-
+                
                 Text("Choose the purchase option that fits for you.")
                     .fontWeight(.thin)
-
+                
                 Spacer()
             }
             .task {
