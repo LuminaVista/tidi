@@ -12,7 +12,7 @@ struct LoginView: View {
     @StateObject private var loginViewModel = LoginViewModel()
     @State private var navigateToHome = false  // Track navigation state
     
-
+    
     var body: some View {
         NavigationStack{
             ZStack{
@@ -33,7 +33,7 @@ struct LoginView: View {
                             .font(.footnote)
                             .padding(.horizontal)
                     }
-                    if loginViewModel.isLoading { 
+                    if loginViewModel.isLoading {
                         ProgressView()
                             .padding()
                     }
@@ -55,9 +55,29 @@ struct LoginView: View {
                     Button(action: {
                         loginViewModel.errorMessage = nil
                     }) {
-                        NavigationLink("Forgot Password?", destination: ResetPasswordView())
-                            .font(.footnote)
-                            .foregroundColor(.blue)
+                        
+                        VStack{
+                            NavigationLink("Forgot Password?", destination: ResetPasswordView())
+                                .font(.footnote)
+                                .foregroundColor(.blue)
+                            
+                            // Register link
+                            HStack {
+                                Text("Don't have an account?")
+                                    .foregroundColor(.black.opacity(0.7))
+                                NavigationLink(destination: RegisterView().environmentObject(appViewModel)) {
+                                    Text("Register")
+                                        .foregroundColor(.blue)
+                                        .fontWeight(.bold)
+                                }
+                            }
+                            .font(.subheadline)
+                            .padding(.top, 10)
+                        }
+                        
+                        
+                        
+                       
                     }
                     
                     Image("tidi_sun")  // Add your logo to Assets

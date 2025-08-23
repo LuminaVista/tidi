@@ -28,4 +28,8 @@ struct LoginResponse: Codable{
     let token: String
 }
 
-
+struct DeleteAccountResponse: Decodable {
+    let status: Int
+    let message: String?
+    let error: String?
+}

@@ -11,6 +11,8 @@ struct HomeView: View {
     
     var onLogout: () -> Void
     
+    @EnvironmentObject var appViewModel: AppViewModel
+    
     @StateObject private var viewModel = BusinessIdeaViewModel()
     @StateObject private var viewModelUserLoginHandle = LoginViewModel()
     @State private var selectedTab = 1  // 1 for Active, 0 for Inactive
@@ -27,7 +29,7 @@ struct HomeView: View {
                     VStack {
                         HStack{
                             // settings button
-                            NavigationLink(destination: SettingsView()) {
+                            NavigationLink(destination: SettingsView().environmentObject(appViewModel)){
                                 Image(systemName: "gearshape")
                                     .resizable()
                                     .frame(width: 24, height: 24)
@@ -191,7 +193,6 @@ struct CircularProgressView: View {
 }
 
 #Preview {
-    HomeView(
-        onLogout: {}
-    )
+    HomeView(onLogout: {})
+    .environmentObject(AppViewModel())
 }

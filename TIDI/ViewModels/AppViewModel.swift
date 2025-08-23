@@ -56,6 +56,10 @@ class AppViewModel: ObservableObject {
         return true
     }
     
+    func deleteAndLogout() {
+        KeychainHelper.shared.deleteToken(forKey: "userAuthToken")
+        self.isLoggedIn = false
+    }
     
     func logout() {
         KeychainHelper.shared.deleteToken(forKey: "userAuthToken")

@@ -1,15 +1,15 @@
 import SwiftUI
 
 struct SettingsView: View {
-    
-    @State private var retypedEmail: String = ""
-    @Environment(\.presentationMode) var presentationMode
-    
+
+    @EnvironmentObject var appViewModel: AppViewModel
+    @StateObject private var viewModel = SettingsViewModel()
+
     var body: some View {
         NavigationView {
             ZStack(alignment: .top) {
                 Color(hex: "#DDD4C8").ignoresSafeArea()
-                
+
                 VStack(spacing: 0) {
                     // Logo
                     VStack {
@@ -26,22 +26,19 @@ struct SettingsView: View {
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.bottom, 10)
-                    
-                    // White Content
+
+                    // White Box Content
                     VStack(alignment: .leading, spacing: 20) {
                         Text("Account Deletion")
                             .font(.headline)
                             .padding(.top, 20)
                             .frame(maxWidth: .infinity, alignment: .center)
-                        
-                        // Deletion Warnings
+
                         VStack(alignment: .leading, spacing: 15) {
                             Text("Once you delete your account:")
                                 .bold()
                             deletionBullet("Your account with all of its details will be deleted permanently")
                             deletionBullet("All the business ideas (active + inactive) will be deleted permanently")
-                            deletionBullet("All the AI-generated feedback will be permanently deleted")
-                            deletionBullet("All the AI-generated and user-generated tasks will be permanently deleted")
                         }
                         .padding(16)
                         .background(
@@ -49,33 +46,31 @@ struct SettingsView: View {
                                 .stroke(Color.red, lineWidth: 1)
                         )
                         .padding(.horizontal, 20)
-                        
-                        
-                        VStack{
+
+                        VStack {
                             Text("Please Re-type your email to delete your account permanently")
                                 .fontWeight(.semibold)
                         }
                         .padding(.horizontal, 20)
-                        CustomTextField(placeholder: "Re-type your email", text: $retypedEmail)
-                        
-                        
+
+                        CustomTextField(placeholder: "Re-type your email", text: $viewModel.retypedEmail)
+
                         // Delete Button
                         Button(action: {
-                            // Simulate delete + back to registration
-                            //presentationMode.wrappedValue.dismiss()
+                            viewModel.deleteAccount()
                         }) {
                             Text("Delete My Account")
-                                .foregroundColor(retypedEmail.isEmpty ? .gray : .black)
+                                .foregroundColor(viewModel.retypedEmail.isEmpty ? .gray : .black)
                                 .fontWeight(.bold)
                                 .frame(maxWidth: .infinity)
                                 .padding()
                                 .background(Color(hex: "#DDD4C8"))
                                 .cornerRadius(12)
                         }
-                        .disabled(retypedEmail.isEmpty)
+                        .disabled(viewModel.retypedEmail.isEmpty)
                         .padding(.horizontal, 20)
                         .padding(.top, 10)
-                        
+
                         Spacer()
                     }
                     .frame(maxWidth: .infinity)
@@ -86,9 +81,13 @@ struct SettingsView: View {
             }
         }
         .navigationBarBackButtonHidden(true)
+        .onAppear {
+            if viewModel.appViewModel == nil {
+                viewModel.appViewModel = appViewModel
+            }
+        }
     }
-    
-    // MARK: - Reusable Bullet View
+
     func deletionBullet(_ text: String) -> some View {
         HStack(alignment: .top, spacing: 8) {
             Image(systemName: "exclamationmark.triangle.fill")
@@ -104,4 +103,5 @@ struct SettingsView: View {
 
 #Preview {
     SettingsView()
+        .environmentObject(AppViewModel())
 }
