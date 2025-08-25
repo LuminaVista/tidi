@@ -34,7 +34,7 @@ class AppViewModel: ObservableObject {
         for await result in Transaction.currentEntitlements {
             if case .verified(let transaction) = result,
                transaction.revocationDate == nil,
-               transaction.expirationDate ?? .distantPast > Date() {
+               (transaction.expirationDate ?? .distantFuture) > Date() {
                 DispatchQueue.main.async {
                     self.hasActiveSubscription = true
                 }

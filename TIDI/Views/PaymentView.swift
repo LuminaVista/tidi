@@ -188,47 +188,63 @@ struct PaymentOptionRow: View {
 struct PaymentView: View {
     @EnvironmentObject private var paymentViewModel: PaymentViewModel
     @EnvironmentObject private var appViewModel:     AppViewModel
-    
-    /// Called when *any* purchase completes successfully
     var onComplete: (() -> Void)? = nil
-    
+
     var body: some View {
         ZStack {
-            Color(hex: "#DDD4C8")
-                .ignoresSafeArea()
-            
+            Color(hex: "#DDD4C8").ignoresSafeArea()
+
             VStack(spacing: 20) {
                 Spacer()
-                
+
                 Image("app_logo")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 200, height: 100)
-                
-                // Iterate your [Product] by id:
+
                 ForEach(paymentViewModel.products, id: \.id) { product in
                     PaymentOptionRow(product: product, onComplete: onComplete)
-                        .environmentObject(paymentViewModel)  // pass down
+                        .environmentObject(paymentViewModel)
                         .environmentObject(appViewModel)
                 }
                 .padding(.horizontal, 40)
-                
+
+                // Restore Purchases (required by App Review)
+                Button {
+                    _Concurrency.Task { await paymentViewModel.restorePurchases(appVM: appViewModel) }
+                } label: {
+                    if paymentViewModel.isRestoring {
+                        ProgressView("Restoring…")
+                            .frame(maxWidth: .infinity, minHeight: 44)
+                    } else {
+                        Text("Restore Purchases")
+                            .fontWeight(.semibold)
+                            .frame(maxWidth: .infinity, minHeight: 44)
+                    }
+                }
+                .disabled(paymentViewModel.isRestoring)
+                .padding(.horizontal, 40)
+                .background(Color.clear)
+
+                if let err = paymentViewModel.restoreError {
+                    Text(err)
+                        .font(.footnote)
+                        .foregroundColor(.red)
+                        .padding(.horizontal, 40)
+                }
+
                 Text("Choose the purchase option that fits for you.")
                     .fontWeight(.thin)
-                
+
                 Spacer()
             }
             .task {
-                do {
-                    try await paymentViewModel.loadProducts()
-                } catch {
-                    print(error)
-                }
+                do { try await paymentViewModel.loadProducts() } catch { print(error) }
+                await paymentViewModel.updatePurchasedProducts()   // optional: reflect current entitlements
             }
         }
     }
 }
-
 
 
 
