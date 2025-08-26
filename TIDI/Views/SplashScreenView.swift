@@ -11,9 +11,9 @@ import _Concurrency
 struct SplashScreenView: View {
     @EnvironmentObject var appViewModel: AppViewModel
     @EnvironmentObject var paymentViewModel: PaymentViewModel
-    @State private var navigate = false
-    @State private var navigateToPayment = false
-    @State private var navigateToRegister = false
+//    @State private var navigate = false
+//    @State private var navigateToPayment = false
+//    @State private var navigateToRegister = false
     
     var body: some View {
         ZStack {
@@ -25,33 +25,33 @@ struct SplashScreenView: View {
                 .frame(width: 200, height: 100)
         }
         
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
-                //navigate = true
-                _Concurrency.Task {
-                    await appViewModel.checkSubscriptionStatus()
-                    if !appViewModel.hasActiveSubscription {
-                        navigateToPayment = true
-                    } else if !appViewModel.hasLaunchedBefore {
-                        navigateToRegister = true
-                    }
-                }
-            }
-        }
-        .fullScreenCover(isPresented: $navigateToPayment) {
-            PaymentView {
-                // Called after successful purchase in first-launch flow
-                navigateToPayment = false                    // dismiss paywall sheet
-                appViewModel.hasActiveSubscription = true    // mark active
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                    appViewModel.markFirstLaunchComplete()
-                    navigateToRegister = true
-                }
-            }
-        }
-        .fullScreenCover(isPresented: $navigateToRegister) {
-            RegisterView()
-        }
+//        .onAppear {
+//            DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+//                //navigate = true
+//                _Concurrency.Task {
+//                    await appViewModel.checkSubscriptionStatus()
+//                    if !appViewModel.hasActiveSubscription {
+//                        navigateToPayment = true
+//                    } else if !appViewModel.hasLaunchedBefore {
+//                        navigateToRegister = true
+//                    }
+//                }
+//            }
+//        }
+//        .fullScreenCover(isPresented: $navigateToPayment) {
+//            PaymentView {
+//                // Called after successful purchase in first-launch flow
+//                navigateToPayment = false                    // dismiss paywall sheet
+//                //appViewModel.hasActiveSubscription = true    // mark active
+//                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+//                    appViewModel.markFirstLaunchComplete()
+//                    navigateToRegister = true
+//                }
+//            }
+//        }
+//        .fullScreenCover(isPresented: $navigateToRegister) {
+//            RegisterView()
+//        }
     }
 }
 

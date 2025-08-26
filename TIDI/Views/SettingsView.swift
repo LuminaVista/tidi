@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct SettingsView: View {
-
+    
+    @Environment(\.dismiss) private var dismiss // Modern back navigation method
     @EnvironmentObject var appViewModel: AppViewModel
     @StateObject private var viewModel = SettingsViewModel()
 
@@ -14,13 +15,20 @@ struct SettingsView: View {
                     // Logo
                     VStack {
                         HStack {
+                            Button(action: {
+                                dismiss() // Modern back navigation
+                            }) {
+                                Image(systemName: "chevron.left")
+                                    .foregroundColor(.black)
+                                    .fontWeight(.bold)
+                            }
+                            .padding(.leading, 12)
+                            .padding(.top, 25)
                             Spacer()
-                            Image("app_logo")
-                                .resizable()
-                                .scaledToFit()
-                                .frame(height: 40)
+                            Text("Acount Deletion")
+                                .fontWeight(.bold)
+                                .padding(.trailing, 20)
                                 .padding(.top, 20)
-                                .padding(.bottom, 10)
                             Spacer()
                         }
                     }
@@ -29,10 +37,6 @@ struct SettingsView: View {
 
                     // White Box Content
                     VStack(alignment: .leading, spacing: 20) {
-                        Text("Account Deletion")
-                            .font(.headline)
-                            .padding(.top, 20)
-                            .frame(maxWidth: .infinity, alignment: .center)
 
                         VStack(alignment: .leading, spacing: 15) {
                             Text("Once you delete your account:")
@@ -40,7 +44,7 @@ struct SettingsView: View {
                             deletionBullet("Your account with all of its details will be deleted permanently")
                             deletionBullet("All the business ideas (active + inactive) will be deleted permanently")
                         }
-                        .padding(16)
+                        .padding(25)
                         .background(
                             RoundedRectangle(cornerRadius: 12)
                                 .stroke(Color.red, lineWidth: 1)
@@ -73,6 +77,7 @@ struct SettingsView: View {
 
                         Spacer()
                     }
+                    .padding(.top, 20)
                     .frame(maxWidth: .infinity)
                     .background(Color.white)
                     .cornerRadius(20)

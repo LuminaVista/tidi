@@ -27,26 +27,23 @@ struct TIDIApp: App {
                 .environmentObject(paymentVM)
                 .preferredColorScheme(.light)
                 .task {
-                    await appViewModel.checkSubscriptionStatus()
-                    await paymentVM.updatePurchasedProducts()
+                    await appViewModel.checkCurrentEntitlements() // New method
                     
-                    _Concurrency.Task.detached(priority: .background) { [weak appViewModel, weak paymentVM] in
-                        guard let appViewModel, let paymentVM else { return }
-                        
-                        for await update in Transaction.updates {
-                            print("Received transaction update: \(update)")
-                            guard case .verified(let transaction) = update else {
-                                print("Unverified transaction")
-                                continue
-                            }
-                            print("Verified transaction: \(transaction.productID)")
-                            await transaction.finish()
-                            
-                            // Sync both view models
-                            await paymentVM.syncWithAppViewModel(appViewModel)
-                            await appViewModel.checkSubscriptionStatus()
-                        }
-                    }
+//                    _Concurrency.Task.detached(priority: .background) { [weak appViewModel, weak paymentVM] in
+//                        guard let appViewModel, let paymentVM else { return }
+//                        
+//                        for await update in Transaction.updates {
+//                            print("Received transaction update: \(update)")
+//                            guard case .verified(let transaction) = update else {
+//                                print("Unverified transaction")
+//                                continue
+//                            }
+//                            print("Verified transaction: \(transaction.productID)")
+//                            await transaction.finish()
+//                            
+//                            await appViewModel.checkCurrentEntitlements()
+//                        }
+//                    }
                 }
         }
     }

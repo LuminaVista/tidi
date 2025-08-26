@@ -240,7 +240,7 @@ struct PaymentView: View {
             }
             .task {
                 do { try await paymentViewModel.loadProducts() } catch { print(error) }
-                await paymentViewModel.updatePurchasedProducts()   // optional: reflect current entitlements
+                // await paymentViewModel.updatePurchasedProducts()   // optional: reflect current entitlements
             }
         }
     }

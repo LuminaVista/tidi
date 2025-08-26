@@ -22,6 +22,25 @@ struct RootView: View {
                             }
                         }
                     }
+            } else if appViewModel.isCheckingSubscription {
+                // Show loading while checking subscription
+                ZStack {
+                    Color(hex: "#DDD4C8").ignoresSafeArea()
+                    
+                    VStack(spacing: 20) {
+                        Image("app_logo")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 200, height: 100)
+                        
+                        ProgressView()
+                            .scaleEffect(1.2)
+                        
+                        Text("Checking subscription status...")
+                            .font(.headline)
+                            .foregroundColor(.black)
+                    }
+                }
             } else {
                 if !appViewModel.hasActiveSubscription {
                     PaymentView()

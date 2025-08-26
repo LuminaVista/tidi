@@ -12,7 +12,8 @@ class AppViewModel: ObservableObject {
     @Published var isLoggedIn: Bool = false
     @Published var hasLaunchedBefore: Bool
     @Published var hasActiveSubscription: Bool = false
-
+    @Published var isCheckingSubscription: Bool = true // Add this
+    
     init() {
         // Check token
         if let token = KeychainHelper.shared.getToken(forKey: "userAuthToken"), !token.isEmpty {
@@ -24,24 +25,53 @@ class AppViewModel: ObservableObject {
         let launched = UserDefaults.standard.bool(forKey: "hasLaunchedBefore")
         self.hasLaunchedBefore = launched
     }
-
+    
     func markFirstLaunchComplete() {
         UserDefaults.standard.set(true, forKey: "hasLaunchedBefore")
         self.hasLaunchedBefore = true
     }
     
-    func checkSubscriptionStatus() async {
+    // This only checks current entitlements (no restore)
+    func checkCurrentEntitlements() async {
+        print("=== AppViewModel.checkCurrentEntitlements ===")
         for await result in Transaction.currentEntitlements {
+            print("AppViewModel entitlement: \(result)")
             if case .verified(let transaction) = result,
                transaction.revocationDate == nil,
                (transaction.expirationDate ?? .distantFuture) > Date() {
-                DispatchQueue.main.async {
+                print("AppViewModel found valid subscription: \(transaction.productID)")
+                await MainActor.run {
+                    self.hasActiveSubscription = true
+                    self.isCheckingSubscription = false
+                }
+                return
+            }
+        }
+        print("AppViewModel: No valid subscriptions found")
+        await MainActor.run {
+            self.hasActiveSubscription = false
+            self.isCheckingSubscription = false
+        }
+    }
+    
+    // This is for manual restore (called from button)
+    func checkSubscriptionStatus() async {
+        print("=== AppViewModel.checkSubscriptionStatus (Manual Restore) ===")
+        // This can be more comprehensive and include restore logic
+        for await result in Transaction.currentEntitlements {
+            print("AppViewModel entitlement: \(result)")
+            if case .verified(let transaction) = result,
+               transaction.revocationDate == nil,
+               (transaction.expirationDate ?? .distantFuture) > Date() {
+                print("AppViewModel found valid subscription: \(transaction.productID)")
+                await MainActor.run {
                     self.hasActiveSubscription = true
                 }
                 return
             }
         }
-        DispatchQueue.main.async {
+        print("AppViewModel: No valid subscriptions found")
+        await MainActor.run {
             self.hasActiveSubscription = false
         }
     }
