@@ -92,12 +92,18 @@ struct PaymentOptionRow: View {
                         .fontWeight(.bold)
                         .foregroundColor(Color.black)
                         .font(.system(size: 22))
+                        .padding(.top, 10)
                     
                     Divider()
                         .frame(height: 1) // Thickness
                         .background(Color.black.opacity(0.2)) // Color
                     
-                    
+                    HStack{
+                        Text("Premium Subscription Features")
+                            .fontWeight(.bold)
+                            .foregroundStyle(Color(hex: "#38a3a5"))
+                            .font(.system(size: 15))
+                    }
                     
                     
                     VStack(alignment: .leading, spacing: 10){
@@ -161,7 +167,7 @@ struct PaymentOptionRow: View {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundColor(.black)
                                 .font(.system(size: 15))
-                            Text("Full-Access to all the features")
+                            Text("Full-Access to all features")
                                 .foregroundStyle(Color.black)
                                 .font(.system(size: 15))
                         }
@@ -194,9 +200,7 @@ struct PaymentView: View {
         ZStack {
             Color(hex: "#DDD4C8").ignoresSafeArea()
 
-            VStack(spacing: 20) {
-                Spacer()
-
+            VStack(spacing: 12) {
                 Image("app_logo")
                     .resizable()
                     .scaledToFit()
@@ -235,8 +239,12 @@ struct PaymentView: View {
 
                 Text("Choose the purchase option that fits for you.")
                     .fontWeight(.thin)
-
-                Spacer()
+                // Optional: Add this for extra clarity
+                Text("All features listed above require an active subscription.")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+                    .padding(.horizontal, 40)
+                    .padding(.top, 5)
             }
             .task {
                 do { try await paymentViewModel.loadProducts() } catch { print(error) }

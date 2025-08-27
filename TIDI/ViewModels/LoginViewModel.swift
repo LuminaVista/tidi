@@ -21,6 +21,7 @@ class LoginViewModel: ObservableObject{
         
         guard !email.isEmpty, !password.isEmpty else{
             self.errorMessage = ErrorMessages.FieldRequired.fieldsRequired
+            self.isLoading = false
             return
         }
         
